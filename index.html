@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shower Wall Training — Transolid / Samuel Mueller</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0e11; --bg2:#0f1318; --panel:#161c24; --panel2:#1d2530; --panel3:#232d3a;
+  --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.15);
+  --text:#eef2f6; --muted:#9aa6b3; --dim:#6c7886;
+  --gold:#cda968; --gold2:#e7d3a1; --goldDim:rgba(205,169,104,.16);
+  --teal:#74b6bb; --good:#7fb069; --warn:#e0b15a; --danger:#dd8166; --purple:#9b8bd0;
+  --grad-gold:linear-gradient(135deg,#e7d3a1,#cda968 55%,#b08d4f);
+  --shadow:0 18px 50px -22px rgba(0,0,0,.8); --r:18px; --r2:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(1200px 700px at 80% -10%,#16202b 0%,var(--bg) 55%),var(--bg);
+  color:var(--text);font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.serif{font-family:'Cormorant Garamond',Georgia,serif}
+.wrap{max-width:1180px;margin:0 auto;padding:0 26px}
+.eyebrow{font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.gold-text{background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* NAV with two toggles */
+nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(10,12,15,.74);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px;flex-wrap:wrap}
+.brandtoggle{display:flex;align-items:center;gap:9px;font-weight:600;letter-spacing:.01em}
+.brandtoggle .dot{width:11px;height:11px;border-radius:50%;background:var(--grad-gold);box-shadow:0 0 14px var(--gold);flex:none}
+.brandtoggle button{border:0;background:transparent;font:inherit;font-weight:600;font-size:15px;color:var(--dim);cursor:pointer;transition:.25s;padding:5px 4px;border-radius:6px}
+.brandtoggle button:hover{color:var(--muted)}
+.brandtoggle button.active{color:var(--gold2)}
+.brandtoggle .bsep{color:var(--dim)}
+.modeswitch{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px;gap:4px}
+.modeswitch button{border:0;background:transparent;color:var(--muted);font:inherit;font-size:13.5px;font-weight:600;padding:9px 18px;border-radius:999px;cursor:pointer;transition:.3s;letter-spacing:.02em;white-space:nowrap}
+.modeswitch button.active{color:#10130f;background:var(--grad-gold)}
+@media(max-width:520px){.brandtoggle button{font-size:13px}.modeswitch button{padding:8px 12px;font-size:12px}}
+
+/* VIEWS */
+.view{display:none}
+.view.active{display:block;animation:viewIn .45s ease}
+@keyframes viewIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* Brand-aware name pair */
+.np .t,.np .s{transition:color .25s,opacity .25s}
+.np .sep{color:var(--dim);margin:0 .35em;font-weight:400}
+body[data-brand="ts"] .np .t{color:var(--gold2)} body[data-brand="ts"] .np .s{opacity:.4;font-weight:500}
+body[data-brand="sm"] .np .s{color:var(--gold2)} body[data-brand="sm"] .np .t{opacity:.4;font-weight:500}
+
+header.hero{position:relative;padding:104px 0 76px;overflow:hidden}
+.hero .glow{position:absolute;inset:0;background:
+   radial-gradient(620px 360px at 14% 20%,rgba(205,169,104,.16),transparent 60%),
+   radial-gradient(520px 320px at 88% 30%,rgba(116,182,187,.12),transparent 60%);pointer-events:none}
+.hero h1{font-size:clamp(40px,6.4vw,80px);line-height:1.03;font-weight:600;letter-spacing:-.01em;margin:14px 0 18px}
+.hero p.lede{font-size:clamp(17px,2vw,21px);color:var(--muted);max-width:700px}
+.hero .ideas{display:flex;gap:14px;flex-wrap:wrap;margin-top:32px}
+.idea{flex:1 1 280px;background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;position:relative;overflow:hidden}
+.idea:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--grad-gold)}
+.idea h3{font-size:16px;margin-bottom:6px}.idea p{font-size:14.5px;color:var(--muted)}
+
+section{padding:72px 0;border-top:1px solid var(--line)}
+.sec-head{margin-bottom:36px;max-width:780px}
+.sec-head h2{font-size:clamp(30px,4.4vw,50px);font-weight:600;line-height:1.05;margin:10px 0 12px}
+.sec-head p{color:var(--muted);font-size:16.5px}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.note{font-size:13.5px;color:var(--dim);margin-top:18px;font-style:italic}
+
+/* DECODER */
+.decoder{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.dpair{background:var(--panel);border:1px solid var(--line);border-radius:var(--r2);padding:18px 20px;transition:.3s}
+.dpair:hover{border-color:var(--line2);transform:translateY(-3px);box-shadow:var(--shadow)}
+.dpair .tier{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.dpair .names{font-size:20px;font-weight:600}
+.dpair .hook{margin-top:10px;font-size:13px;color:var(--muted)}
+
+/* LADDER */
+.ladder{display:flex;flex-direction:column;gap:11px}
+.rung{display:grid;grid-template-columns:120px 1fr;align-items:center;gap:18px}
+.rung .price{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold);letter-spacing:.04em;text-align:right}
+.rung .bar{height:54px;border-radius:12px;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;padding:0 20px;position:relative;overflow:hidden;width:0;transition:width 1s cubic-bezier(.2,.7,.2,1)}
+.rung .bar .fill{position:absolute;inset:0;background:linear-gradient(90deg,var(--goldDim),transparent);opacity:.8}
+.rung .bar .lbl{position:relative;font-weight:600;font-size:15px}
+.rung .bar .sub{position:relative;color:var(--muted);font-size:13px;margin-left:auto}
+@media(max-width:640px){.rung .bar .sub{display:none}.rung{grid-template-columns:64px 1fr}.rung .price{font-size:18px}}
+
+/* LINE EXPLORER */
+.linegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.lcard{position:relative;background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--r);padding:20px;cursor:pointer;transition:.3s;overflow:hidden}
+.lcard:hover{transform:translateY(-4px);border-color:var(--line2);box-shadow:var(--shadow)}
+.lcard.active{border-color:var(--gold)}
+.lcard.active:after{content:"";position:absolute;inset:0;border-radius:var(--r);box-shadow:inset 0 0 0 1px var(--gold)}
+.lcard.rec{animation:pulse 1.6s ease}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(205,169,104,.55)}100%{box-shadow:0 0 0 16px rgba(205,169,104,0)}}
+.lcard .swatch{height:8px;border-radius:6px;margin-bottom:14px;background:var(--grad-gold)}
+.lcard .title{font-size:20px;font-weight:600;line-height:1.25}
+.lcard .mat{font-size:13px;color:var(--muted);margin-top:11px}
+.lcard .pricetag{display:inline-block;margin-top:12px;font-size:12px;color:var(--gold);border:1px solid var(--line2);padding:3px 9px;border-radius:999px;letter-spacing:.08em}
+.detail{margin-top:20px;background:var(--panel);border:1px solid var(--line2);border-radius:var(--r);padding:0 26px;max-height:0;opacity:0;overflow:hidden;transition:max-height .55s ease,opacity .4s ease,padding .4s}
+.detail.open{max-height:820px;opacity:1;padding:26px}
+.detail .dh{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.detail .dh .htitle{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.dgrid .cell{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.dgrid .cell .k{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:5px}
+.dgrid .cell .v{font-size:14.5px}
+.badge{display:inline-block;font-size:12px;padding:3px 10px;border-radius:999px;font-weight:600}
+.badge.good{background:rgba(127,176,105,.16);color:#a7d496}
+.badge.warn{background:rgba(224,177,90,.16);color:#f0cd86}
+.badge.no{background:rgba(221,129,102,.18);color:#f0a591}
+
+/* QUIZ */
+.quiz{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--r);padding:30px}
+.q{padding:16px 0;border-bottom:1px solid var(--line)}.q:last-child{border-bottom:0}
+.q .qq{font-size:16px;font-weight:600;margin-bottom:12px}
+.chips{display:flex;flex-wrap:wrap;gap:9px}
+.chip{border:1px solid var(--line2);background:var(--panel2);color:var(--text);font:inherit;font-size:13.5px;padding:9px 15px;border-radius:999px;cursor:pointer;transition:.22s}
+.chip:hover{border-color:var(--gold);color:var(--gold2)}
+.chip.sel{background:var(--grad-gold);color:#10130f;border-color:transparent;font-weight:600}
+.recout{margin-top:22px;background:var(--bg2);border:1px dashed var(--line2);border-radius:14px;padding:18px 20px;min-height:64px}
+.recout .ro-label{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.recout .ro-lines{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.recout .pill{background:var(--goldDim);border:1px solid var(--gold);padding:7px 16px;border-radius:999px;font-size:14px;font-weight:600}
+.recout .empty{color:var(--dim);font-size:14.5px}
+.recout .ro-note{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.5;border-top:1px solid var(--line);padding-top:10px}
+
+/* SAY / POINT */
+.sayer{display:grid;grid-template-columns:1.1fr .9fr;gap:22px}
+@media(max-width:820px){.sayer{grid-template-columns:1fr}}
+.saylist{display:flex;flex-direction:column;gap:8px}
+.sayitem{text-align:left;border:1px solid var(--line);background:var(--panel);color:var(--text);font:inherit;font-size:14.5px;padding:13px 16px;border-radius:12px;cursor:pointer;transition:.22s;display:flex;gap:10px;align-items:center}
+.sayitem:before{content:"\201C";font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:30px;line-height:0;margin-top:8px}
+.sayitem:hover{border-color:var(--gold);transform:translateX(4px)}
+.sayitem.sel{border-color:var(--gold);background:var(--panel2)}
+.saypanel{position:sticky;top:86px;align-self:start;background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line2);border-radius:var(--r);padding:26px;min-height:200px}
+.saypanel .ro-label{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.saypanel .big{font-family:'Cormorant Garamond',serif;font-size:30px;margin:8px 0 4px;line-height:1.2}
+.saypanel .why{margin-top:16px;font-size:14.5px;color:var(--muted)}
+.dotsep{color:var(--dim)}
+
+/* COMPETITORS */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;align-items:center}
+.filters .fbtn{border:1px solid var(--line2);background:var(--panel);color:var(--muted);font:inherit;font-size:13px;padding:8px 14px;border-radius:999px;cursor:pointer;transition:.22s}
+.filters .fbtn:hover{color:var(--text)}
+.filters .fbtn.active{background:var(--grad-gold);color:#10130f;border-color:transparent;font-weight:600}
+.crow{border:1px solid var(--line);background:var(--panel);border-radius:14px;margin-bottom:10px;overflow:hidden;transition:.3s}
+.crow.hidden{display:none}
+.crow .chead{display:grid;grid-template-columns:1.6fr .8fr 1fr 1fr;gap:14px;align-items:center;padding:16px 20px;cursor:pointer}
+@media(max-width:760px){.crow .chead{grid-template-columns:1.4fr 1fr}.crow .chead .hide-sm{display:none}}
+.crow .cb{font-weight:600;font-size:15.5px;display:flex;align-items:center;gap:10px}
+.crow .cb .type{font-size:11px;color:var(--dim);border:1px solid var(--line2);padding:2px 8px;border-radius:999px;letter-spacing:.06em}
+.crow .meta{font-size:13px;color:var(--muted)}
+.crow .cbody{max-height:0;overflow:hidden;transition:max-height .5s ease;background:var(--bg2)}
+.crow.open .cbody{max-height:460px}
+.crow .cbody .inner{padding:18px 22px;border-top:1px solid var(--line)}
+.crow .contrast{font-size:14.5px;margin-bottom:14px}
+.crow .say{background:var(--panel2);border-left:3px solid var(--gold);border-radius:10px;padding:14px 16px;font-size:14.5px}
+.crow .say .lab{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.usbar{display:grid;grid-template-columns:1.6fr .8fr 1fr 1fr;gap:14px;padding:10px 20px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+@media(max-width:760px){.usbar{display:none}}
+
+/* ACCORDION */
+.acc{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:10px;background:var(--panel)}
+.acc .ahead{padding:18px 22px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:14px;font-weight:600;font-size:16px}
+.acc .plus{color:var(--gold);font-size:22px;transition:.3s;flex:none}
+.acc.open .plus{transform:rotate(45deg)}
+.acc .abody{max-height:0;overflow:hidden;transition:max-height .5s ease;background:var(--bg2)}
+.acc.open .abody{max-height:360px}
+.acc .abody .inner{padding:6px 22px 22px}
+.acc .script{font-size:15px;font-style:italic;border-left:3px solid var(--gold);padding-left:16px;line-height:1.7}
+.acc.dd.open .abody{max-height:1000px}
+.dd-grp{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin:28px 0 12px}
+.dd-grp:first-child{margin-top:0}
+.dd-body .row{display:grid;grid-template-columns:155px 1fr;gap:14px;padding:11px 0;border-top:1px solid var(--line);font-size:14px}
+.dd-body .row:first-child{border-top:0;padding-top:0}
+.dd-body .row .k{color:var(--gold2);font-weight:600;font-size:11px;letter-spacing:.07em;text-transform:uppercase;padding-top:2px}
+@media(max-width:600px){.dd-body .row{grid-template-columns:1fr;gap:3px}}
+.dd-tag{display:inline-block;font-size:10.5px;padding:3px 9px;border-radius:999px;margin-left:8px;font-weight:600;letter-spacing:.04em;vertical-align:middle}
+.dd-tag.ours{background:var(--goldDim);color:var(--gold2);border:1px solid var(--gold)}
+.dd-tag.comp{background:rgba(221,129,102,.14);color:#f0a591;border:1px solid rgba(221,129,102,.4)}
+
+/* PRODUCT DEMOS */
+.demo{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--r);padding:30px;margin-bottom:22px}
+.demo .dt{font-size:21px;font-weight:600;margin-bottom:4px}
+.demo .dd{color:var(--muted);font-size:15px;margin-bottom:22px;max-width:760px}
+.demo2{display:grid;grid-template-columns:1fr 1fr;gap:18px}@media(max-width:680px){.demo2{grid-template-columns:1fr}}
+.demoCard{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:18px}
+.dlabel{font-size:13px;font-weight:600;letter-spacing:.04em;margin-top:14px}
+.dcap{font-size:13.5px;color:var(--muted);margin-top:5px;min-height:40px;transition:.3s}
+.runbtn{margin-top:20px;border:1px solid var(--gold);background:var(--goldDim);color:var(--gold2);font:inherit;font-weight:600;font-size:14px;padding:11px 22px;border-radius:999px;cursor:pointer;transition:.25s;letter-spacing:.02em}
+.runbtn:hover{background:var(--grad-gold);color:#10130f}
+.panel{height:150px;border-radius:12px;position:relative;overflow:hidden;border:1px solid var(--line2)}
+.panel.through{background:linear-gradient(135deg,#d8c6a4 0%,#c2a87e 50%,#ad9069 100%)}
+.panel.through .scratch{position:absolute;top:-10%;left:46%;width:5px;height:120%;background:linear-gradient(#fff,rgba(255,255,255,.2));transform:rotate(18deg);opacity:0;border-radius:4px}
+.panel.printed{background:#262b32}
+.panel.printed .printstrip{position:absolute;top:0;left:0;right:0;height:30px;background:linear-gradient(135deg,#d8c6a4,#ad9069)}
+.panel.printed .core-label{position:absolute;bottom:8px;left:10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#7a838d}
+.panel.printed .gouge{position:absolute;top:-10%;left:46%;width:7px;height:120%;background:#15181c;transform:rotate(18deg);opacity:0;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.4)}
+.scratched .through .scratch{animation:buff 2.2s ease forwards}
+@keyframes buff{0%{opacity:0}18%{opacity:.85}60%{opacity:.5}100%{opacity:0}}
+.scratched .printed .gouge{opacity:1;transition:opacity .5s ease .25s}
+.heatwrap{position:relative;height:150px;border-radius:12px;border:1px solid var(--line2);overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--panel)}
+.heatbar{width:78%;height:40px;border-radius:9px;background:var(--grad-gold);transform-origin:center bottom;transition:transform .2s}
+.steam{position:absolute;inset:0;opacity:0;background:repeating-linear-gradient(0deg,transparent,transparent 14px,rgba(116,182,187,.14) 15px,transparent 16px);transition:opacity .4s}
+.steamed .steam{opacity:1;animation:rise 1.4s linear infinite}
+@keyframes rise{to{background-position:0 -30px}}
+.steamed .thermoplastic{animation:bow 2s ease forwards}
+@keyframes bow{to{transform:perspective(340px) rotateX(14deg) scaleY(1.05);border-radius:9px 9px 46% 46%/9px 9px 26px 26px;filter:brightness(.92)}}
+.tilewall,.panelwall{height:150px;border-radius:12px;border:1px solid var(--line2);position:relative;overflow:hidden}
+.tilewall{background:repeating-linear-gradient(0deg,#cdb38a 0 28px,#3a3027 28px 31px),repeating-linear-gradient(90deg,transparent 0 46px,#3a3027 46px 49px)}
+.tilewall .mildew,.tilewall .crack{position:absolute;opacity:0;transition:opacity 1.1s ease}
+.tilewall .mildew{inset:0;background:radial-gradient(circle at 20% 31px,rgba(40,60,30,.85) 2px,transparent 5px),radial-gradient(circle at 64% 60px,rgba(40,60,30,.8) 2px,transparent 6px),radial-gradient(circle at 90% 90px,rgba(40,55,30,.8) 2px,transparent 5px),radial-gradient(circle at 38% 120px,rgba(45,60,32,.75) 2px,transparent 6px),radial-gradient(circle at 47% 90px,rgba(40,60,30,.8) 1px,transparent 4px)}
+.tilewall .crack{top:-5%;left:47px;width:3px;height:110%;background:#15120e;transform:rotate(4deg)}
+.panelwall{background:linear-gradient(135deg,#dfe6ea,#b9c2cb 55%,#9aa6b1)}
+.panelwall:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.35) 50%,transparent 60%);transform:translateX(-120%)}
+.aged .tilewall .mildew,.aged .tilewall .crack{opacity:1}
+.aged .panelwall:after{animation:sheen 1.6s ease}
+@keyframes sheen{to{transform:translateX(120%)}}
+
+/* MATERIAL CUTAWAYS */
+.matgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.matcard{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--r);padding:22px;transition:.3s}
+.matcard:hover{transform:translateY(-4px);border-color:var(--line2);box-shadow:var(--shadow)}
+.stack{height:120px;border-radius:10px;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--line2);margin-bottom:16px}
+.layer{flex:1;display:flex;align-items:center;padding-left:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(20,22,26,.7);font-weight:600}
+.layer.alu{flex:0 0 9px;background:linear-gradient(90deg,#c9d2da,#9aa6b1)}
+.layer.print{flex:0 0 22px;background:linear-gradient(135deg,#d8c6a4,#ad9069)}
+.layer.core{background:#2a3038;color:#8a93a0}
+.layer.fiber{background:linear-gradient(135deg,#c9b48d,#a98f64);position:relative}
+.layer.fiber:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(125deg,rgba(255,255,255,.18) 0 2px,transparent 2px 9px)}
+.layer.solid{background:linear-gradient(135deg,#d8c6a4,#b2966c)}
+.layer.solid2{background:linear-gradient(135deg,#dfe6ea,#aeb9c2)}
+.matcard h3{font-size:20px;font-weight:600}
+.matcard .used{font-size:12.5px;color:var(--gold);margin:3px 0 10px;letter-spacing:.02em}
+.matcard p{font-size:13.5px;color:var(--muted)}
+.tag{display:inline-block;margin-top:12px;font-size:11px;padding:4px 10px;border-radius:999px;font-weight:600}
+.tag.good{background:rgba(127,176,105,.16);color:#a7d496}.tag.no{background:rgba(221,129,102,.18);color:#f0a591}
+
+/* STEPS / STATS / SILICA / TABLE */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}@media(max-width:780px){.steps{grid-template-columns:1fr 1fr}}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:var(--r2);padding:20px}
+.step .num{font-family:'Cormorant Garamond',serif;font-size:38px;color:var(--gold);line-height:1}
+.step h4{font-size:15px;margin:8px 0 6px}.step p{font-size:13px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}@media(max-width:780px){.stats{grid-template-columns:1fr 1fr}}
+.stat{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--r);padding:26px 20px;text-align:center}
+.stat .big{font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:600;line-height:1}
+.stat .big .u{font-size:24px;color:var(--gold)}.stat .lab{font-size:13px;color:var(--muted);margin-top:8px}
+.jeep{margin-top:18px;background:var(--goldDim);border:1px solid var(--line2);border-radius:14px;padding:16px 20px;font-size:14.5px;text-align:center}
+.bars{display:flex;flex-direction:column;gap:14px}
+.brow{display:grid;grid-template-columns:240px 1fr;gap:16px;align-items:center}@media(max-width:640px){.brow{grid-template-columns:140px 1fr}}
+.brow .bl{font-size:14px}.brow .bl small{display:block;color:var(--dim);font-size:11.5px}
+.btrack{height:30px;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.bfill{height:100%;width:0;border-radius:8px;transition:width 1.2s cubic-bezier(.2,.7,.2,1);display:flex;align-items:center;justify-content:flex-end;padding-right:10px;font-size:12px;font-weight:600;color:#10130f}
+.bfill.g{background:linear-gradient(90deg,#6f9e5b,#8fc173)}.bfill.w{background:linear-gradient(90deg,#c7912f,#e0b15a)}.bfill.d{background:linear-gradient(90deg,#b6543b,#dd8166)}
+table{width:100%;border-collapse:collapse;font-size:14px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+th,td{text-align:left;padding:13px 16px;border-bottom:1px solid var(--line)}
+th{background:var(--panel2);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+tr:last-child td{border-bottom:0}td b{color:var(--gold2)}
+.coach{background:var(--panel);border-left:3px solid var(--teal);border-radius:10px;padding:16px 18px;margin-top:20px;font-size:14px;color:var(--muted)}.coach b{color:var(--text)}
+
+footer{padding:50px 0 70px;border-top:1px solid var(--line);color:var(--dim);font-size:13px;text-align:center}
+footer .fm{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;color:var(--muted)}
+footer .dot{width:9px;height:9px;border-radius:50%;background:var(--grad-gold)}
+</style>
+</head>
+<body data-brand="ts">
+
+<nav>
+  <div class="wrap">
+    <div class="brandtoggle">
+      <span class="dot"></span>
+      <button data-brand="ts" class="active">Transolid</button>
+      <span class="bsep">/</span>
+      <button data-brand="sm">Samuel Mueller</button>
+    </div>
+    <div class="modeswitch">
+      <button data-view="sell" class="active">Selling Toolkit</button>
+      <button data-view="prod">Product Knowledge</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ================= SELLING VIEW ================= -->
+<div class="view active" data-view="sell">
+  <header class="hero">
+    <div class="glow"></div>
+    <div class="wrap">
+      <div class="eyebrow">Customer Service Training · Selling Toolkit</div>
+      <h1 class="serif">Sell it with <span class="gold-text">confidence.</span></h1>
+      <p class="lede">Decode the brand names, compare the lines, beat the competition, and guide every customer to the right shower wall. Use the brand switch in the top-left to put either brand's names front and center.</p>
+      <div class="ideas">
+        <div class="idea"><h3 class="serif">Color-through vs. skin-deep</h3><p>Our best lines carry color through the whole panel. Most cheap competitors print the look in a thin film over a dark core.</p></div>
+        <div class="idea"><h3 class="serif">Repairable vs. replace-only</h3><p>Solid-surface lines sand and buff back to like-new. Printed panels can only be replaced.</p></div>
+      </div>
+    </div>
+  </header>
+
+  <section id="decoder"><div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">Quick Lookup</div><h2 class="serif">Brand name decoder</h2>
+      <p>Transolid and Samuel Mueller are sibling brands, same material and engineering, different collection name. The brand switch at the top emphasizes whichever brand's names you are speaking to.</p></div>
+    <div class="decoder reveal" id="decoderGrid"></div>
+    <p class="note reveal">Don't get tripped up: it's <b>Lusso</b> (not "Luso"). Titan's "White / Black Caruso" is the same Carrara look Samuel Mueller calls "White / Black Carrara."</p>
+  </div></section>
+
+  <section id="ladder"><div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">Where each line sits</div><h2 class="serif">The price ladder</h2>
+      <p>Least to most expensive. Price tracks material and finish, not only repairability. Titan is priced as a premium look even though it is a printed surface.</p></div>
+    <div class="ladder" id="ladderList"></div>
+  </div></section>
+
+  <section id="explorer"><div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">Know the range</div><h2 class="serif">Line explorer</h2>
+      <p>Tap any line for the full picture: material, repairability, looks, colors, sizes, and the customer it fits best.</p></div>
+    <div class="linegrid reveal" id="lineGrid"></div>
+    <div class="detail" id="lineDetail"></div>
+  </div></section>
+
+  <section id="quiz"><div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">Guide the customer</div><h2 class="serif">Discovery questions</h2>
+      <p>Ask a few, tap their answers, and watch the recommended lines light up. Guide, don't push.</p></div>
+    <div class="quiz reveal" id="quizBox"></div>
+  </div></section>
+
+  <section id="sayer"><div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">Fast steer</div><h2 class="serif">If they say… point to…</h2>
+      <p>Tap what the customer says to get the line to reach for.</p></div>
+    <div class="sayer reveal">
+      <div class="saylist" id="sayList"></div>
+      <div class="saypanel" id="sayPanel">
+        <div class="ro-label">Point them to</div>
+        <div class="big serif" id="sayBig">Tap a phrase →</div>
+        <div class="why" id="sayWhy">Their words map straight to a line. Use it as your opener, then confirm with a discovery question.</div>
+      </div>
+    </div>
+  </div></section>
+
+  <section id="compete"><div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">Us vs. them</div><h2 class="serif">Competitor matrix</h2>
+      <p>Filter by material, then tap any brand for the honest contrast and a ready-to-say line. Knocks are only the real, documented kind.</p></div>
+    <div class="filters reveal" id="filters"></div>
+    <div class="usbar"><span>Brand</span><span class="hide-sm">Color-through</span><span class="hide-sm">Repairable</span><span>Warranty</span></div>
+    <div id="compList" class="reveal"></div>
+  </div></section>
+
+  <section id="objections"><div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">Word for word</div><h2 class="serif">Objection scripts</h2>
+      <p>The five you'll hear most, with a response you can say out loud.</p></div>
+    <div id="accList" class="reveal"></div>
+  </div></section>
+</div>
+
+<!-- ================= PRODUCT VIEW ================= -->
+<div class="view" data-view="prod">
+  <header class="hero">
+    <div class="glow"></div>
+    <div class="wrap">
+      <div class="eyebrow">Customer Service Training · Product Knowledge</div>
+      <h1 class="serif">How our walls <span class="gold-text">are made.</span></h1>
+      <p class="lede">The materials, the engineering, and the science behind every Transolid and Samuel Mueller shower wall, explained so you can explain it to anyone.</p>
+    </div>
+  </header>
+
+  <section id="ideas"><div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">Start here</div><h2 class="serif">The two ideas that explain almost everything</h2>
+      <p>Ninety percent of "why is yours better" questions come back to one of these. Tap the buttons to see them in motion.</p></div>
+
+    <div class="demo reveal" id="demoScratch">
+      <div class="dt serif">1 · Color-through vs. skin-deep</div>
+      <div class="dd">In a solid, color-through panel the color runs through the full thickness. In a printed competitor it's a thin skin over a dark core.</div>
+      <div class="demo2">
+        <div class="demoCard"><div class="panel through"><div class="scratch"></div></div><div class="dlabel">Our solid surface (SaraMar, Lusso)</div><div class="dcap" id="capOur">Color runs through the whole panel.</div></div>
+        <div class="demoCard"><div class="panel printed"><div class="printstrip"></div><div class="core-label">dark core</div><div class="gouge"></div></div><div class="dlabel">Printed competitor (SPC / laminate)</div><div class="dcap" id="capTheir">A thin printed layer sits over a dark core.</div></div>
+      </div>
+      <button class="runbtn" id="scratchBtn">Scratch both →</button>
+    </div>
+
+    <div class="demo reveal" id="demoSteam">
+      <div class="dt serif">2 · Thermoset vs. thermoplastic</div>
+      <div class="dd">Our molded composites are thermoset: permanently cured, so heat can't re-soften them. Cheap SPC/PVC is thermoplastic and stays heat-sensitive for life.</div>
+      <div class="demo2">
+        <div class="demoCard"><div class="heatwrap"><div class="steam"></div><div class="heatbar thermoset"></div></div><div class="dlabel">Our thermoset composite (SMC / BMC)</div><div class="dcap">Locked structure, stays flat and stable under continuous steam.</div></div>
+        <div class="demoCard"><div class="heatwrap"><div class="steam"></div><div class="heatbar thermoplastic"></div></div><div class="dlabel">Thermoplastic (SPC / PVC)</div><div class="dcap">Softens, expands, and can bow with sustained heat.</div></div>
+      </div>
+      <button class="runbtn" id="steamBtn">Apply steam →</button>
+    </div>
+
+    <div class="demo reveal" id="demoGrout">
+      <div class="dt serif">Bonus · No grout</div>
+      <div class="dd">Our walls install as large glued-up panels with sealed seams. No grout lines to absorb water, stain, crack, or grow mold.</div>
+      <div class="demo2">
+        <div class="demoCard"><div class="tilewall"><div class="mildew"></div><div class="crack"></div></div><div class="dlabel">Tile + grout</div><div class="dcap">Porous grout lines collect mildew and crack as a house settles.</div></div>
+        <div class="demoCard"><div class="panelwall"></div><div class="dlabel">Our groutless panel</div><div class="dcap">One sealed, non-porous surface, nothing to scrub or reseal.</div></div>
+      </div>
+      <button class="runbtn" id="ageBtn">Fast-forward a year →</button>
+    </div>
+  </div></section>
+
+  <section id="materials"><div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">The four materials</div><h2 class="serif">What our walls are made of</h2>
+      <p>Every collection is built from one of these four materials. The cutaway shows where the color and reinforcement live.</p></div>
+    <div class="matgrid reveal" id="matGrid"></div>
+  </div></section>
+
+  <section id="deepdive"><div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">Get into the weeds</div><h2 class="serif">Material deep dive</h2>
+      <p>Expand any material to nerd out on exactly how it is made, ours and every major competitor's. Use this when a customer wants the full engineering story.</p></div>
+    <div id="deepList" class="reveal"></div>
+  </div></section>
+
+  <section id="making"><div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">Precision, not extrusion</div><h2 class="serif">How our panels are made</h2>
+      <p>Our composites are compression-molded, not extruded plastic or printed film. Four stages turn raw material into a dense, uniform panel.</p></div>
+    <div class="steps reveal">
+      <div class="step"><div class="num">01</div><h4>Mold design</h4><p>Each mold is machined from solid tool steel, about 6 to 8 months of engineering, so textures look and feel real.</p></div>
+      <div class="step"><div class="num">02</div><h4>Material prep</h4><p>Fiberglass, resin, and fillers are precisely measured and placed for optimal color and strength.</p></div>
+      <div class="step"><div class="num">03</div><h4>Compression molding</h4><p>Heated molds apply thousands of PSI, forcing every particle into formation and curing the thermoset permanently.</p></div>
+      <div class="step"><div class="num">04</div><h4>Quality assurance</h4><p>Every panel is inspected for density, color consistency, and structural integrity before it ships.</p></div>
+    </div>
+  </div></section>
+
+  <section id="strength"><div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">Engineered strength</div><h2 class="serif">A material difference</h2><p>The numbers that come out of that process.</p></div>
+    <div class="stats reveal" id="stats"></div>
+    <div class="jeep reveal">We drove a <b>6,200 lb Jeep Wrangler</b> directly over our compression-molded base. No cracks. No scratches. Not even a scuff.</div>
+    <div class="coach reveal"><b>Coaching note:</b> the "4x impact / 2.5x heat resistance" figures are published on our base product pages (vs. other bases). For the wall "4x vs. acrylic" line, if a customer presses for test data, say "significantly more impact-resistant than acrylic."</div>
+  </div></section>
+
+  <section id="safety"><div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">Health & safety</div><h2 class="serif">The crystalline silica story</h2>
+      <p>The most under-used differentiator we have, especially for healthcare and education buyers. Here is why it matters and how our materials truly compare.</p></div>
+
+    <div class="demo reveal" style="margin-bottom:24px">
+      <div class="dt serif">Why healthcare &amp; education buyers care</div>
+      <div class="dd" style="max-width:920px">Hospitals, senior-living communities, and universities specify on five things: infection control, easy cleaning, occupant safety, decades of service life, and increasingly the safety of the crews who fabricate the material. A non-porous, seamless, grout-free surface gives mold and bacteria nowhere to colonize and wipes clean. A renewable surface can be refinished in place for decades instead of being torn out. And a zero-crystalline-silica material means no silicosis risk to the workers who cut and fabricate it, an exposure that has become a serious occupational-health and liability issue. Engineered quartz (90%+ silica) has driven a documented silicosis epidemic among fabricators, serious enough to be banned in Australia and emergency-regulated in California. Our cast-acrylic solid surface sits at the opposite end of that scale.</div>
+    </div>
+
+    <div class="bars reveal" id="silica"></div>
+
+    <div class="matgrid reveal" style="margin-top:28px">
+      <div class="matcard"><h3 class="serif" style="font-size:18px">Cast solid surface vs. SMC / BMC</h3><p style="margin-top:8px">All three are non-porous and groutless. But cast-acrylic solid surface is fully homogeneous, so it sands and buffs back to like-new, and its alumina-trihydrate mineral filler is effectively zero crystalline silica. SMC and BMC are fiberglass-reinforced, which gives superb impact strength (and BMC is color-through), but the glass means they are not refinished to like-new the way smooth solid surface is, and their fillers are not guaranteed silica-free, so crews should use dust control when cutting.</p></div>
+      <div class="matcard"><h3 class="serif" style="font-size:18px">Cast solid surface vs. tile + thinset</h3><p style="margin-top:8px">Tile is many small pieces joined by porous cement grout, and the mortar and grout are roughly 30 to 60 percent crystalline silica (the tile body about 21 percent). Dry-cutting and grinding it releases respirable silica, an OSHA-regulated, irreversible hazard, and the grout itself stains, mildews, and must be sealed and resealed. Cast solid surface is the opposite: one seamless, non-porous, renewable sheet with near-zero silica and no grout at all.</p></div>
+      <div class="matcard"><h3 class="serif" style="font-size:18px">What about the printed competitors?</h3><p style="margin-top:8px">SPC, PVC, laminate, cultured marble, and aluminum panels are generally low in crystalline silica too, but they trade it for other problems: printed surfaces that cannot be repaired, thermoplastic cores that can warp, edges that can delaminate, and (for vinyl and PVC) plastic chemistry. See the Material Deep Dive above for exactly how each one is built.</p></div>
+    </div>
+
+    <div class="coach reveal"><b>How to use it:</b> keep the clean "zero crystalline silica" line attached to our cast-acrylic solid surface. For fiberglass SMC/BMC, say "no engineered-stone silica hazard" and recommend normal dust control when cutting. Frame it as installer and corporate-responsibility safety, not a scare. Our panels are also BPA-free, PFAS-free, factory-cured and low-VOC, with passive (not chemical-biocide) mold resistance.</div>
+  </div></section>
+
+  <section id="table"><div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">At a glance</div><h2 class="serif">Material cheat-table</h2></div>
+    <div class="reveal" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>Material</th><th>Our lines</th><th>Color-through</th><th>Repairable</th><th>Key strength</th></tr></thead>
+      <tbody>
+        <tr><td><b>Cast acrylic solid surface</b></td><td>Lusso / Luxura</td><td>Yes, fully</td><td>Yes, sand &amp; buff to like-new</td><td>Hospital-grade hygiene, near-zero silica</td></tr>
+        <tr><td><b>BMC compressed solid surface</b></td><td>SaraMar / Monterey</td><td>Yes, fully</td><td>Yes, scratches buff out</td><td>Dense color-through tile &amp; velvet looks</td></tr>
+        <tr><td><b>SMC compression-molded</b></td><td>Prodigy, Prodigy Plus, Expressions / Pioneer, Pioneer Plus, Silhouette</td><td>Through-color (textured)</td><td>Scratch-resistant; Plus lines repairable on solid panels only</td><td>High impact strength, deep molded textures</td></tr>
+        <tr><td><b>ACP aluminum composite</b></td><td>Titan / Trinity</td><td>No, printed surface</td><td>No, replace if gouged</td><td>Highest-resolution marble look, lightweight</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="coach reveal">All shower wall collections and Trimslate bases carry a <b>10-year limited residential / 3-year limited commercial</b> warranty.</div>
+  </div></section>
+
+  <section id="bases"><div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">Under your feet</div><h2 class="serif">The Trimslate base</h2>
+      <p>Compression-molded SMC, solid all the way through, the opposite of a thin, hollow, vacuum-formed big-box pan.</p></div>
+    <div class="matgrid reveal">
+      <div class="matcard"><div class="dt serif" style="font-size:18px">Structural ribbing</div><p style="margin-top:8px">A dense network of cross-linked ribbing on the underside keeps the base rigid and dead-level, so it won't flex, squeak, or crack. Rated <b style="color:var(--gold2)">4x impact</b> and <b style="color:var(--gold2)">2.5x heat resistance</b> of other bases.</p></div>
+      <div class="matcard"><div class="dt serif" style="font-size:18px">Zero / low threshold</div><p style="margin-top:8px">A 3-in-1 threshold handles single, double, or triple-threshold installs. In a flush install the base sits only about <b style="color:var(--gold2)">1/8 inch</b> off the finished floor for a modern wet-room look with safe entry.</p></div>
+      <div class="matcard"><div class="dt serif" style="font-size:18px">Field trimmable</div><p style="margin-top:8px">Trim up to <b style="color:var(--gold2)">4 inches in width</b> (away from the drain) and <b style="color:var(--gold2)">2 inches in depth</b> without compromising the base or its integrated tiling flanges. Center, end, and corner drains; slip-resistant textured floor.</p></div>
+    </div>
+  </div></section>
+</div>
+
+<footer><div class="wrap">
+  <div class="fm"><span class="dot"></span> Transolid / Samuel Mueller · Customer Service Training</div>
+  Internal training reference. Always confirm current colors, sizes, and pricing against the live catalog.
+</div></footer>
+
+<script>
+function np(l,sep){sep=sep||'/';return '<span class="np"><b class="t">'+l.ts+'</b><span class="sep">'+sep+'</span><b class="s">'+l.sm+'</b></span>';}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+
+const LINES=[
+  {ts:"Prodigy",sm:"Pioneer",tier:1,price:"$",material:"SMC · ~3.5mm",repair:{t:"Durable, through-color (not refinishable)",c:"warn"},
+   look:"Herringbone, hexagon, vertical / subway / horizontal tile textures",colors:"White, Dark Grey (gloss / matte / textured)",sizes:'60x36 kits, 72" / 96", 3- & 6-piece, trimmable',best:"Value shoppers and texture / pattern lovers",sw:"linear-gradient(135deg,#8a8f96,#5d636b)"},
+  {ts:"Prodigy Plus",sm:"Pioneer Plus",tier:2,price:"$$",material:"SMC · ~3.5mm",repair:{t:"Solid colors repairable; patterns surface-only",c:"warn"},
+   look:"8x16 stone tile (Transolid) · 3D Gali Wave (Samuel Mueller)",colors:"Ashy Grey, Calcite, Aztec, Lustrous Gold · Wave White, Caramel, Grey",sizes:"60x36x96 kits, trimmable (wave back wall not side-trimmable)",best:"Value buyers who want an elevated or feature look",sw:"linear-gradient(135deg,#b79e7d,#7d6a52)"},
+  {ts:"Expressions",sm:"Silhouette",tier:3,price:"$$$",material:'Composite solid surface · ~1/4"',repair:{t:"Solids color-through; patterns embedded",c:"warn"},
+   look:"Solids + soft warm stone; smooth / subway / square styles",colors:"White, Bisque, Grey, Bianca, Sea Fog, Bleached Oak (+ Pearl Stone, Linen, Tundra)",sizes:'3- & 6-piece; 36x36–60x32; 72" / 96"; trimmable',best:"a calm, neutral look that fits both value and long-term premium budgets",sw:"linear-gradient(135deg,#cdbfa6,#9c8e76)"},
+  {ts:"Titan",sm:"Trinity",tier:4,price:"$$$$",material:"Aluminum composite · 4mm",repair:{t:"Printed surface — NOT repairable",c:"no"},
+   look:"Photoreal Carrara, marble, concrete; book-matched panels",colors:"White / Black Caruso (Carrara), Savanna / Sabana Grey & Creme, Concrete",sizes:'60x36x96 kits, ~39x96 panels, lightweight, glue-up',best:"a dramatic statement look at an accessible price + lightweight install",sw:"linear-gradient(135deg,#e9edf2,#aab4c0 60%,#3f4650)"},
+  {ts:"SaraMar",sm:"Monterey",tier:5,price:"$$$$$",material:'BMC solid surface · 1/4"',repair:{t:"Fully color-through — buffs out",c:"good"},
+   look:"True 4x8 subway tile + smooth velvet finish",colors:"White, White Venito, Lunar / Moonstone, Cashew, Biscotti Marble, Sand Creme, Carrara",sizes:'36x36–60x36, 72" / 96", trimmable, glue-up',best:"the tile look with full repairability",sw:"linear-gradient(135deg,#eef0f2,#c9cdd2)"},
+  {ts:"Lusso",sm:"Luxura",tier:6,price:"$$$$$$",material:'Cast acrylic solid surface · 1/4"',repair:{t:"Fully color-through — buffs out · hospital-grade",c:"good"},
+   look:"Smooth designer marble, refined and cool",colors:"Palladio White, Bellanca, Creme Carmel, Glacier Grey · Iceberg Grey, Misty River, Bellagio",sizes:"Single panels + 3-/6-piece kits, trimmable",best:"hygiene-first, premium, cool tones",sw:"linear-gradient(135deg,#dfe6ea,#aeb9c2)"}
+];
+const byTs=Object.fromEntries(LINES.map(l=>[l.ts,l]));
+
+/* DECODER */
+const decoderGrid=document.getElementById('decoderGrid');
+LINES.forEach(l=>{
+  const d=document.createElement('div'); d.className='dpair';
+  d.innerHTML='<div class="tier">Tier '+l.tier+' · '+l.price+'</div><div class="names">'+np(l,'⇄')+'</div><div class="hook">'+l.material+'</div>';
+  decoderGrid.appendChild(d);
+});
+
+/* LADDER */
+const ladder=document.getElementById('ladderList');
+LINES.forEach((l,i)=>{
+  const r=document.createElement('div'); r.className='rung';
+  r.innerHTML='<div class="price">'+l.price+'</div><div class="bar" data-w="'+(40+i*12)+'"><div class="fill"></div><span class="lbl">'+np(l)+'</span><span class="sub">'+l.material+'</span></div>';
+  ladder.appendChild(r);
+});
+
+/* LINE EXPLORER */
+const lineGrid=document.getElementById('lineGrid'), lineDetail=document.getElementById('lineDetail');
+LINES.forEach(l=>{
+  const c=document.createElement('div'); c.className='lcard'; c.dataset.ts=l.ts;
+  c.innerHTML='<div class="swatch" style="background:'+l.sw+'"></div><div class="title">'+np(l)+'</div><div class="mat">'+l.material+'</div><span class="pricetag">'+l.price+'</span>';
+  c.addEventListener('click',()=>openLine(l.ts));
+  lineGrid.appendChild(c);
+});
+function openLine(ts){
+  const l=byTs[ts];
+  document.querySelectorAll('.lcard').forEach(x=>x.classList.toggle('active',x.dataset.ts===ts));
+  lineDetail.innerHTML='<div class="dh"><span class="htitle">'+np(l)+'</span><span class="pricetag" style="border:1px solid var(--line2);color:var(--gold);padding:3px 9px;border-radius:999px;font-size:12px">'+l.price+'</span></div>'+
+    '<div class="dgrid">'+
+    '<div class="cell"><div class="k">Material</div><div class="v">'+l.material+'</div></div>'+
+    '<div class="cell"><div class="k">Repairability</div><div class="v"><span class="badge '+l.repair.c+'">'+l.repair.t+'</span></div></div>'+
+    '<div class="cell"><div class="k">Signature looks</div><div class="v">'+l.look+'</div></div>'+
+    '<div class="cell"><div class="k">Colors</div><div class="v">'+l.colors+'</div></div>'+
+    '<div class="cell"><div class="k">Sizes</div><div class="v">'+l.sizes+'</div></div>'+
+    '<div class="cell"><div class="k">Best for</div><div class="v">'+cap(l.best)+'</div></div>'+
+    '</div>';
+  lineDetail.classList.add('open');
+}
+
+/* QUIZ */
+const QUESTIONS=[
+  {q:'Budget-conscious project, or a long-term premium space?',a:[['Budget / value',['Prodigy','Prodigy Plus','Expressions','Titan']],['Long-term premium',['Expressions','SaraMar','Lusso']]]},
+  {q:'How important is it that scratches can be repaired (pets, kids, rentals)?',a:[['Very important',['SaraMar','Lusso','Prodigy Plus'],'Prodigy Plus / Pioneer Plus count only on their solid-color panels; the patterned panel is a surface texture and is not repairable.'],['Not a priority',['Prodigy','Expressions','Titan']]]},
+  {q:'What look are they going for?',a:[['Clean solid colors',['Expressions']],['Subway tile',['SaraMar']],['Bold marble veining',['Titan']],['Unique texture',['Prodigy','Prodigy Plus']]]},
+  {q:'Warm tones or cool tones?',a:[['Warm / neutral',['Expressions','SaraMar']],['Cool tones',['Lusso','SaraMar']]]},
+  {q:'Texture they can feel, or smooth wipe-clean?',a:[['Tactile texture',['Prodigy','SaraMar']],['Smooth surface',['Expressions','Lusso']]]},
+  {q:'Healthcare, senior living, or max hygiene?',a:[['Yes',['Lusso']],['No',[]]]},
+  {q:'Does lightweight single-person install matter?',a:[['Yes',['Titan']],['No',[]]]}
+];
+const quiz=document.getElementById('quizBox');
+QUESTIONS.forEach((Q,qi)=>{
+  const qd=document.createElement('div'); qd.className='q';
+  const chips=Q.a.map((a,ai)=>'<button class="chip" data-q="'+qi+'" data-a="'+ai+'">'+a[0]+'</button>').join('');
+  qd.innerHTML='<div class="qq">'+(qi+1)+'. '+Q.q+'</div><div class="chips">'+chips+'</div>';
+  quiz.appendChild(qd);
+});
+const answered={};
+quiz.querySelectorAll('.chip').forEach(ch=>{
+  ch.addEventListener('click',()=>{
+    const qi=+ch.dataset.q, ai=+ch.dataset.a;
+    quiz.querySelectorAll('.chip[data-q="'+qi+'"]').forEach(x=>x.classList.remove('sel'));
+    ch.classList.add('sel');
+    answered[qi]={lines:QUESTIONS[qi].a[ai][1],note:QUESTIONS[qi].a[ai][2]||''};
+    recompute();
+  });
+});
+const recoutWrap=document.createElement('div'); recoutWrap.className='recout';
+recoutWrap.innerHTML='<div class="ro-label">Recommended lines</div><div class="ro-lines"><span class="empty">Answer a question to see suggestions.</span></div>';
+quiz.appendChild(recoutWrap);
+function recompute(){
+  const tally={}; const notes=[];
+  Object.values(answered).forEach(a=>{a.lines.forEach(t=>tally[t]=(tally[t]||0)+1); if(a.note)notes.push(a.note);});
+  const sorted=Object.entries(tally).sort((a,b)=>b[1]-a[1]);
+  const max=sorted.length?sorted[0][1]:0;
+  const top=sorted.filter(s=>s[1]===max).map(s=>s[0]);
+  const out=recoutWrap.querySelector('.ro-lines');
+  if(!sorted.length){out.innerHTML='<span class="empty">Answer a question to see suggestions.</span>';}
+  else{out.innerHTML=top.map(t=>{const star=(t==='Prodigy Plus'&&notes.length)?'<span style="color:var(--gold)"> *</span>':'';return '<span class="pill">'+np(byTs[t])+star+'</span>';}).join('');}
+  let noteEl=recoutWrap.querySelector('.ro-note');
+  if(!noteEl){noteEl=document.createElement('div');noteEl.className='ro-note';recoutWrap.appendChild(noteEl);}
+  noteEl.innerHTML=notes.map(n=>'* '+n).join('<br>');
+  noteEl.style.display=notes.length?'block':'none';
+  document.querySelectorAll('.lcard').forEach(c=>c.classList.remove('rec'));
+  top.forEach(t=>{const card=document.querySelector('.lcard[data-ts="'+t+'"]'); if(card){void card.offsetWidth;card.classList.add('rec');}});
+}
+
+/* SAY / POINT */
+const SAY=[
+  ['Lowest price that still looks good',['Prodigy']],
+  ['I love a herringbone / hexagon / textured look',['Prodigy','Prodigy Plus']],
+  ['I want a feature or statement wall',['Prodigy Plus','Titan']],
+  ['Keep it simple, solid, neutral, mid-budget',['Expressions']],
+  ['I want something affordable but still premium',['Expressions'],'The sweet spot. A mid-tier price with a true composite solid-surface build: the solid colors run all the way through and the patterns are embedded so they cannot scratch off. A premium, high-quality look and durable feel without the top-tier cost.'],
+  ['Classic subway tile look, no grout',['SaraMar']],
+  ['Real, dramatic marble veining',['Titan']],
+  ['It has to be repairable if scratched',['SaraMar','Lusso']],
+  ['Most hygienic / senior living / healthcare',['Lusso']],
+  ['Cool, spa-like, premium smooth',['Lusso']],
+  ['Lightweight / easy single-person install',['Titan']]
+];
+const sayList=document.getElementById('sayList');
+SAY.forEach(s=>{
+  const b=document.createElement('button'); b.className='sayitem'; b.textContent=s[0];
+  b.addEventListener('click',()=>{
+    sayList.querySelectorAll('.sayitem').forEach(x=>x.classList.remove('sel')); b.classList.add('sel');
+    const lines=s[1].map(t=>byTs[t]);
+    document.getElementById('sayBig').innerHTML=lines.map(l=>np(l)).join('<span class="dotsep"> · </span>');
+    document.getElementById('sayWhy').textContent=s[2]||(cap(lines[0].best)+'. '+lines[0].look+'.');
+  });
+  sayList.appendChild(b);
+});
+
+/* COMPETITORS */
+const COMP=[
+  {brand:"Craft + Main (JETCOAT)",type:"SPC",through:"No",repair:"Light only",warranty:"10-yr / 2-yr rental",
+   contrast:"FGI Industries' coastal-branded line. SPC (marble powder + PVC), the tile look printed in a thin film over a dark core. Home Depot reviewers report click locks that snap and thin seam overlap.",
+   say:"Craft + Main is an SPC panel, vinyl-floor tech with the look printed over a dark core. Ours is a solid composite with the color through the panel and a 10-year residential warranty."},
+  {brand:"OVE / Ove Decors (Misty)",type:"SPC",through:"No",repair:"No",warranty:"5-yr",
+   contrast:"Budget glue-up SPC, 5mm, with aluminum edge trim and caulked corners. Reviewers report it scratches easily and arrives chipped.",
+   say:"Misty is glue-up SPC with caulked corners and a 5-year warranty. For the groutless look with a repairable, color-through surface and double the warranty, that's our lane."},
+  {brand:"American Standard (Passage)",type:"Laminate",through:"No",repair:"No",warranty:"10-yr*",
+   contrast:"Their own spec sheet calls it 'high quality laminate', not solid acrylic. Printed laminate can't be sanded; only listed spare part is caulk; it appears discontinued on their own site.",
+   say:"Passage is a printed laminate, not a solid surface, and appears discontinued. For a lasting, repairable, color-through surface still in production, we're the better long-term choice."},
+  {brand:"Palisade (by ACP)",type:"PVC",through:"No",repair:"No touch-up",warranty:"Lifetime ltd",
+   contrast:"Rigid high-density PVC topped with a printed decorative foil and film. The maker's own FAQ states no matching touch-up paint is available.",
+   say:"Palisade is a printed-foil PVC panel; the maker themselves say there's no touch-up paint if it scratches. Ours is color-through and repairable."},
+  {brand:"Woodbridge",type:"Composite",through:"Unclear",repair:"Not stated",warranty:"10-yr",
+   contrast:"Marketed 'solid surface' but described by the maker as a marble + fiber composite, and very thin at 3.5mm. Reviewers question whether it's solid surface at all.",
+   say:"Woodbridge is a thin (3.5mm) marble-fiber composite sold as 'solid surface.' Ask how thick it is; ours is a true 1/4\" solid panel with the color through it."},
+  {brand:"Onyx Collection",type:"Cast stone",through:"Yes",repair:"Limited",warranty:"“Forever”",
+   contrast:"Genuinely solid and color-through (cast stone). But heavy, install-intensive, limited to flat finishes, cracks under sharp impact, and explicitly NOT rated for steam showers.",
+   say:"Onyx is strong but heavy, limited to flat finishes, and not steam-rated. We give the same color-through, repairable feel at a manageable weight, plus deep textures Onyx can't mold."},
+  {brand:"Kohler Choreograph",type:"Composite",through:"Molded",repair:"Patch kits",warranty:"10-yr (no labor)",
+   contrast:"The benchmark our Expressions and Silhouette target. Serica composite, molded color, the thinnest panel here (~0.18-0.2\"); Kohler pulled it from broad dealer distribution amid quality/warranty issues.",
+   say:"Choreograph is the product we benchmark against, and we come in thicker, true color-through on our solid lines, and sandable."},
+  {brand:"Swanstone (solid surface)",type:"Solid surface",through:"Yes",repair:"Yes",warranty:"Lifetime ltd",
+   contrast:"A genuinely good solid surface. Just note the budget 'Veritek' line (1-year warranty) sold at big-box stores under the 'Swan' name, easy to confuse.",
+   say:"Swanstone solid surface is strong, just confirm it's true Swanstone, not the budget Veritek with a 1-year warranty. We compete on look range and base engineering."},
+  {brand:"Wetwall / Wilsonart",type:"Laminate",through:"No",repair:"No",warranty:"Varies",
+   contrast:"HPL laminate over a waterproof core. The look is a printed laminate layer; sanding removes the pattern, and a breached edge can swell or delaminate.",
+   say:"Wetwall is a printed laminate; sanding removes the pattern and a breached edge can swell. Ours is color-through and repairable."},
+  {brand:"Tile + grout (incl. Schluter)",type:"Tile",through:"Face only",repair:"Replace tile",warranty:"—",
+   contrast:"Porous cement grout stains, mildews, cracks as the house settles, and must be sealed and resealed. Cutting tile and grinding mortar releases respirable silica dust.",
+   say:"Tile is small pieces joined by porous grout, and the grout is what stains, molds, and cracks. We mold a 3D tile texture into a non-porous, color-through panel: the tile look, zero grout."}
+];
+const types=['All'].concat(Array.from(new Set(COMP.map(c=>c.type))));
+const filters=document.getElementById('filters');
+types.forEach((t,i)=>{
+  const b=document.createElement('button'); b.className='fbtn'+(i===0?' active':''); b.textContent=t; b.dataset.t=t;
+  b.addEventListener('click',()=>{filters.querySelectorAll('.fbtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.crow').forEach(r=>r.classList.toggle('hidden',t!=='All'&&r.dataset.type!==t));});
+  filters.appendChild(b);
+});
+const compList=document.getElementById('compList');
+COMP.forEach(c=>{
+  const tcls=c.through==='Yes'?'good':(c.through==='No'?'no':'warn');
+  const rcls=/Yes/.test(c.repair)?'good':(/No|Patch|touch/.test(c.repair)?'no':'warn');
+  const row=document.createElement('div'); row.className='crow'; row.dataset.type=c.type;
+  row.innerHTML='<div class="chead"><div class="cb">'+c.brand+' <span class="type">'+c.type+'</span></div>'+
+    '<div class="meta hide-sm"><span class="badge '+tcls+'">'+c.through+'</span></div>'+
+    '<div class="meta hide-sm"><span class="badge '+rcls+'">'+c.repair+'</span></div>'+
+    '<div class="meta">'+c.warranty+'</div></div>'+
+    '<div class="cbody"><div class="inner"><div class="contrast">'+c.contrast+'</div>'+
+    '<div class="say"><span class="lab">Say it this way</span>'+c.say+'</div></div></div>';
+  row.querySelector('.chead').addEventListener('click',()=>row.classList.toggle('open'));
+  compList.appendChild(row);
+});
+
+/* OBJECTIONS */
+const OBJ=[
+  ["Isn't SPC basically the same thing but much cheaper?","SPC is vinyl-floor technology adapted to walls, a limestone-and-PVC core with a thin printed film on top. One scratch from a dog's claw or a metal shelf can pierce that print and expose a plain core that can't be repaired. And because PVC is a thermoplastic, it can soften and warp under continuous heat. Our panels are engineered composites: the pattern is solid through the material (SaraMar / Monterey) or molded into a fiberglass-reinforced thermoset (Expressions / Pioneer) with far more impact strength, and they don't warp under steam."],
+  ["Tile is the only way to get a premium look that lasts.","Tile is only as good as its grout, and grout is porous. It soaks up dirty water and soap, so it stains, grows mildew, and needs scrubbing and resealing, and grout lines crack as the house settles. Our SaraMar and Monterey lines mold a realistic 3D subway-tile texture right into a non-porous, color-through panel. You get the premium tile look with zero grout lines, and it wipes clean."],
+  ["The Onyx Collection is thicker and has a Forever Guarantee.","Onyx is a strong product, but it's heavy, takes a multi-person install with reinforced walls, is limited to flat finishes, and isn't rated for steam showers. Our Monterey and Lusso solid-surface lines give the same color-through, repairable feel at a more manageable weight, plus deep 3D textures Onyx can't mold, backed 10 years residential."],
+  ["Will the base flex, squeak, or crack over time?","Cheap big-box pans are thin vacuum-formed acrylic, hollow underneath, so they flex, squeak, and can crack and leak. Our Trimslate base is compression-molded SMC with a dense network of structural ribbing underneath, rated 4x the impact resistance of other bases. It's solid all the way through, sits rock-solid and level, and supports a true zero-threshold install."],
+  ["Is this safe for my family and the installers?","Yes. There's been a lot of news about silica dust from cutting engineered quartz countertops, which are 90-percent-plus crystalline silica and have caused silicosis in fabricators. Our cast-acrylic solid surface uses an aluminum-based mineral filler with effectively zero crystalline silica, so there's no silicosis risk. Our panels are also BPA-free, PFAS-free, factory-cured and low-VOC, and the mold resistance is passive: we don't leach chemical biocides into your water."]
+];
+const accList=document.getElementById('accList');
+OBJ.forEach(o=>{
+  const a=document.createElement('div'); a.className='acc';
+  a.innerHTML='<div class="ahead"><span>'+o[0]+'</span><span class="plus">+</span></div><div class="abody"><div class="inner"><div class="script">'+o[1]+'</div></div></div>';
+  a.querySelector('.ahead').addEventListener('click',()=>a.classList.toggle('open'));
+  accList.appendChild(a);
+});
+
+/* MATERIAL DEEP DIVE */
+const DEEP=[
+ {g:'ours',name:'Cast acrylic solid surface',brands:'Lusso / Luxura',
+  comp:"About one-third acrylic (PMMA) resin and two-thirds alumina trihydrate (ATH) mineral filler, plus pigment. The same family as Corian, Hi-Macs, and Staron.",
+  made:"Liquid PMMA, ATH, pigment, and catalyst are blended and cast into a solid, homogeneous sheet, then cured. No fiberglass and no printed layer. It can be gently heated and thermoformed into curves.",
+  repair:"Solid and identical all the way through, so scratches, scuffs, burns, and stains sand and buff back to like-new. Bonds form near-invisible seams. Renewable for decades.",
+  silica:"Filler is ATH (aluminum hydroxide), not crystalline silica, so it is effectively zero-silica with no silicosis risk when cut. Non-porous, UL mold-resistant, BPA-free, low-VOC.",
+  bottom:"The premium, hospital-grade, fully renewable surface. Our top tier."},
+ {g:'ours',name:'BMC — Bulk Molding Compound',brands:'SaraMar / Monterey',
+  comp:"Thermoset polyester resin, short chopped glass fiber (under 0.25 inch / 6 mm), mineral filler (limestone or marble dust), pigment and catalyst, mixed under vacuum into a dough.",
+  made:"A batch process. Everything is homogenized into a putty-like compound, weighed into charges or logs, dropped into a heated steel mold, and compression-molded at roughly 2,000+ PSI (up to about 40,000 lbs of press force). The fluid dough flows into deep, intricate mold detail.",
+  repair:"Color-through. Different-colored dough charges can be placed side by side so the marbling runs through the full thickness, so scratches buff out. Thicker (about 1/4 inch) and heavier because the short fibers limit strength.",
+  silica:"Thermoset, non-porous, steam-stable. Calcium-carbonate-based fillers are low in silica; still use normal dust control when cutting.",
+  bottom:"Authentic, deeply molded subway and tile looks with color-through repairability. The reason its simulated grout lines look real."},
+ {g:'ours',name:'SMC — Sheet Molding Compound',brands:'Prodigy, Prodigy Plus, Expressions / Pioneer, Pioneer Plus, Silhouette',
+  comp:"Thermoset polyester or vinyl-ester resin, longer chopped glass fiber (about 1 inch / 25 mm), mineral filler, catalyst and pigment.",
+  made:"A continuous, in-line process. Resin paste is spread on a moving carrier film, chopped glass is rained on, a top film sandwiches it, and it is rolled to an exact thickness. The sheet matures about 48 hours to a leather-like state, is cut into charges, then compression-molded under heat and high pressure for a permanent cure.",
+  repair:"Longer fibers give high strength, so panels can be thin (3.5 to 5 mm) and very impact-resistant. The backing is a uniform through-color and the decorative pattern is thermally fused and embedded into the surface, so a scratch will not expose a contrasting layer, but a molded texture is not refinished like smooth solid surface. On the Plus kits the solid panels are repairable; the patterned panel is surface-only.",
+  silica:"Thermoset and steam-stable; glass-fiber reinforced, so it is not a zero-silica material. Use dust control when cutting. BPA-free, low-VOC.",
+  bottom:"Thin, light, very tough, with realistic embedded patterns at a value-to-mid price."},
+ {g:'ours',name:'ACP — Aluminum Composite Panel',brands:'Titan / Trinity',
+  comp:"A three-layer sandwich: two thin aluminum skins bonded to a mineral-resin core, about 4 mm thick.",
+  made:"The core is formed and the aluminum skins are laminated on under heat and pressure. The marble look is applied to the surface by high-resolution dye-sublimation printing, heat-fused into the surface coating.",
+  repair:"The look is a printed surface layer, not color-through. A deep gouge exposes the aluminum or core, and the thin aluminum face can dent permanently. Not buff-repairable. Very light and book-matchable, with the highest print resolution.",
+  silica:"No crystalline silica; cutting produces fine aluminum dust, so use normal control. Non-porous metal face.",
+  bottom:"The most photorealistic, lightweight marble or concrete look; the trade-off is a printed, non-repairable surface."},
+ {g:'comp',name:'SPC — Stone-Plastic Composite',brands:'Craft + Main JETCOAT, OVE Misty',
+  comp:"A rigid core of PVC resin plus roughly 60 to 70 percent limestone powder, with plasticizers and stabilizers, topped by a thin printed decor film and a thin UV wear layer. The stone is just limestone filler; the look is printed.",
+  made:"Extrusion. Limestone and PVC are blended and forced through a die into a rigid sheet, then the printed film and wear layer are bonded on with heat and pressure. It is the same technology as rigid-core vinyl plank flooring, turned onto the wall.",
+  repair:"Not color-through. A scratch through the thin print exposes a different-colored (often dark) core and cannot be refinished. PVC is thermoplastic, so it stays heat-sensitive and can expand or warp under sustained heat.",
+  silica:"Limestone filler is low-silica, but it is PVC, so it carries vinyl chemistry concerns (plasticizers, VOC off-gassing, chlorine byproducts if burned). Look for FloorScore or GREENGUARD.",
+  bottom:"Budget vinyl-floor tech on a wall: a thin printed skin over a thermoplastic core."},
+ {g:'comp',name:'Rigid PVC with printed foil',brands:'Palisade',
+  comp:"A rigid high-density PVC core topped with a printed decorative foil and a protective film, about 5 mm thick.",
+  made:"The PVC core is formed, the decorative foil and film are laminated to the surface, and interlocking tongue-and-groove edges are molded in for a click-plus-glue install.",
+  repair:"Printed foil, not color-through. The maker's own FAQ says no matching touch-up paint is available, so a deep scratch that reaches the core cannot be fixed. As a thermoplastic, pieces can arrive warped from shipping heat.",
+  silica:"Low silica, but the same PVC chemistry concerns as SPC apply.",
+  bottom:"An interlocking printed-foil PVC panel."},
+ {g:'comp',name:'Decorative laminate / HPL',brands:'American Standard Passage, Wilsonart Wetwall',
+  comp:"A printed decor paper fused with melamine or phenolic resin into a hard high-pressure laminate, bonded to a substrate: a waterproof core (Wetwall) or water-resistant wallboard (Passage).",
+  made:"The decor paper is printed, impregnated with resin, and fused under high heat and pressure into a laminate sheet, then bonded to the core. It is the same family as countertop laminate.",
+  repair:"A printed decor layer, not color-through, and it cannot be sanded (sanding removes the pattern). If water reaches a damaged edge the core can swell or delaminate. Passage relies on a moisture-resistant backer rather than being the waterproof barrier itself, and appears discontinued.",
+  silica:"Low silica; core and adhesive chemistry vary by product.",
+  bottom:"Printed laminate over a core: not repairable, with delamination risk at the edges."},
+ {g:'comp',name:'Marble-fiber composite',brands:'Woodbridge',
+  comp:"The maker describes a blend of natural marble (calcium carbonate) and fiber-reinforced resin. Marketed as solid surface but distinct from cast-acrylic solid surface, and very thin at 3.5 mm.",
+  made:"Filled resin is cast or molded into thin panels with a molded surface look, then installed glue-up.",
+  repair:"The maker does not confirm that color runs through the full thickness, and the thin section limits any refinishing. Reviewers report staining on matte finishes.",
+  silica:"Calcium-carbonate filler is low in silica.",
+  bottom:"A thin filled-resin panel sold online as solid surface; always confirm thickness and whether the color runs through."},
+ {g:'comp',name:'Cast stone / cultured marble',brands:'Onyx Collection',
+  comp:"Roughly 63 percent alumina trihydrate (a crushed-mineral filler) and 37 percent polyester resin with pigment, finished with a sprayed gel-coat surface. The cultured-marble family, and on Onyx the color is solid throughout.",
+  made:"A gel-coat is sprayed into the mold first; then filler, resin, and pigment are poured in, vibrated to remove air, cured, and demolded.",
+  repair:"Genuinely solid and color-through, so minor scratches are less visible. But it is heavy and install-intensive, limited to flat finishes, cracks under sharp impact (a cracked panel is a full replacement), and is explicitly not rated for steam showers.",
+  silica:"ATH and calcium-carbonate fillers are low in silica. Uncured polyester uses styrene, a manufacturing and cure-stage concern, not an issue on the finished surface.",
+  bottom:"A strong, solid cast-stone product, but heavy, flat-finish only, and not steam-rated."},
+ {g:'comp',name:'Serica crushed-stone composite',brands:'Kohler Choreograph',
+  comp:"Kohler's proprietary Serica, a crushed-stone and fiber-strand composite in resin, molded and matte. Non-porous.",
+  made:"Compression-molded (the same broad family as our compressed composites), with molded color.",
+  repair:"Molded color, but Kohler does not market it as sand-and-buff renewable; repair is touch-up and patch kits only. It is the thinnest of the benchmarks (about 0.18 to 0.2 inch), and Kohler pulled it from broad dealer distribution amid quality and warranty issues.",
+  silica:"Crushed-stone filler may contain some silica; use dust control when cutting.",
+  bottom:"The benchmark our Expressions and Silhouette target, but thinner and patch-kit-only on repair."},
+ {g:'comp',name:'Compression-molded solid surface (and Veritek)',brands:'Swanstone',
+  comp:"Swanstone solid surface is a compression-molded filled-resin solid surface with color and texture through the panel, about 1/4 inch. Veritek is a separate budget composite, a step above fiberglass, with only a 1-year warranty.",
+  made:"Compression-molded under heat and pressure.",
+  repair:"True Swanstone solid surface is color-through and sandable (genuinely good, lifetime limited warranty). Veritek is lower-grade and historically scratch-prone.",
+  silica:"Filled resin; use dust control when cutting.",
+  bottom:"A good solid surface, just confirm a big-box Swan kit is true Swanstone, not the budget Veritek."},
+ {g:'comp',name:'Ceramic / porcelain tile + cement grout',brands:'the tile system (incl. Schluter)',
+  comp:"Fired clay and mineral tile, installed with separate cement-based thinset mortar and grout. The mortar and grout are roughly 30 to 60 percent crystalline silica; the porcelain body is around 21 percent.",
+  made:"Tiles are pressed and kiln-fired (vitrified), then set one piece at a time in thinset over a waterproof membrane, with grout packed into every joint.",
+  repair:"The glazed face is hard, but a chipped tile must be replaced and aged grout is hard to match. The grout is porous, so it stains, mildews, cracks as the house settles, and must be sealed and resealed.",
+  silica:"The highest silica hazard in the category. Dry-cutting tile and mixing or grinding mortar and grout releases respirable crystalline silica, an OSHA-regulated, irreversible health risk for installers.",
+  bottom:"Beautiful but maintenance-heavy at the grout, and the most hazardous to cut and install."}
+];
+const deepList=document.getElementById('deepList');
+let lastG='';
+DEEP.forEach(d=>{
+  if(d.g!==lastG){const h=document.createElement('div'); h.className='dd-grp'; h.textContent=(d.g==='ours'?'Our materials':'Competitor materials'); deepList.appendChild(h); lastG=d.g;}
+  const a=document.createElement('div'); a.className='acc dd';
+  a.innerHTML='<div class="ahead"><span>'+d.name+' <span class="dd-tag '+d.g+'">'+d.brands+'</span></span><span class="plus">+</span></div>'+
+    '<div class="abody"><div class="inner dd-body">'+
+    '<div class="row"><div class="k">Composition</div><div>'+d.comp+'</div></div>'+
+    '<div class="row"><div class="k">How it’s made</div><div>'+d.made+'</div></div>'+
+    '<div class="row"><div class="k">Color &amp; repair</div><div>'+d.repair+'</div></div>'+
+    '<div class="row"><div class="k">Silica &amp; safety</div><div>'+d.silica+'</div></div>'+
+    '<div class="row"><div class="k">Bottom line</div><div>'+d.bottom+'</div></div>'+
+    '</div></div>';
+  a.querySelector('.ahead').addEventListener('click',()=>a.classList.toggle('open'));
+  deepList.appendChild(a);
+});
+
+/* MATERIALS (product view) */
+const MATS=[
+  {name:"Cast acrylic solid surface",used:"Lusso / Luxura",layers:[['solid','Color through full thickness']],
+   p:"Acrylic resin + alumina trihydrate mineral filler, cast solid. Non-porous, hospital-grade, and fully renewable: scratches sand and buff out. Near-zero crystalline silica.",tag:["good","Color-through · repairable"]},
+  {name:"BMC solid surface",used:"SaraMar / Monterey",layers:[['solid','Pigment through the bulk']],
+   p:"Polyester resin, chopped fiberglass, and mineral filler compression-molded under high pressure, with color all the way through. Dense, non-porous, steam-stable. Subway-tile or velvet looks with zero grout.",tag:["good","Color-through · buffs out"]},
+  {name:"SMC composite",used:"Prodigy, Expressions / Pioneer, Silhouette",layers:[['print','Molded textured surface'],['fiber','Fiberglass-reinforced body']],
+   p:"Fiberglass-reinforced thermoset, compression-molded. Significantly more impact-resistant than acrylic and carries deep molded textures. Through-color, so a scratch won't reveal a contrasting layer, but the molded texture isn't refinished like smooth solid surface. On the Plus lines, the solid panels are repairable but the patterned panel is surface-only.",tag:["good","Through-color · durable"]},
+  {name:"ACP aluminum composite",used:"Titan / Trinity",layers:[['print','Printed marble surface'],['alu','Aluminum'],['core','Mineral resin core'],['alu','Aluminum']],
+   p:"A thin printed marble look over an aluminum-and-mineral-core sandwich. The highest-resolution, book-matchable look we offer, and very lightweight, but the surface is printed: a deep gouge exposes the core and can't be buffed out.",tag:["no","Printed surface · not repairable"]}
+];
+const matGrid=document.getElementById('matGrid');
+MATS.forEach(m=>{
+  const stack=m.layers.map(L=>'<div class="layer '+L[0]+'">'+L[1]+'</div>').join('');
+  const c=document.createElement('div'); c.className='matcard';
+  c.innerHTML='<div class="stack">'+stack+'</div><h3 class="serif">'+m.name+'</h3><div class="used">'+m.used+'</div><p>'+m.p+'</p><span class="tag '+m.tag[0]+'">'+m.tag[1]+'</span>';
+  matGrid.appendChild(c);
+});
+
+/* STATS */
+function countUp(el){
+  const t=+el.dataset.t, sep=el.dataset.sep==='1'; const dur=1300; const start=performance.now();
+  function tick(now){const p=Math.min(1,(now-start)/dur); const e=1-Math.pow(1-p,3); let v=Math.round(t*e); el.textContent=sep?v.toLocaleString():v; if(p<1)requestAnimationFrame(tick);} requestAnimationFrame(tick);
+}
+const STATS=[{t:2,suf:'x',lab:'thicker than many competing wall systems'},{t:4,suf:'x',lab:'impact resistance vs. standard materials'},{t:40000,suf:'',lab:'PSI compression on our bases',sep:true},{t:10,suf:'-yr',lab:'limited residential warranty'}];
+const statsEl=document.getElementById('stats');
+STATS.forEach(s=>{const d=document.createElement('div'); d.className='stat'; d.innerHTML='<div class="big"><span class="n" data-t="'+s.t+'" data-sep="'+(s.sep?1:0)+'">0</span><span class="u">'+s.suf+'</span></div><div class="lab">'+s.lab+'</div>'; statsEl.appendChild(d);});
+
+/* SILICA */
+const SIL=[{n:'Our cast-acrylic solid surface',s:'Lusso / Luxura',v:1,cls:'g',lab:'~0%'},{n:'Cultured marble',s:'cast polymer',v:2,cls:'g',lab:'<2%'},{n:'Porcelain tile',s:'fired ceramic',v:21,cls:'w',lab:'~21%'},{n:'Thinset mortar',s:'used with tile',v:45,cls:'d',lab:'30-60%'},{n:'Engineered quartz',s:'countertops',v:92,cls:'d',lab:'90%+'}];
+const silEl=document.getElementById('silica');
+SIL.forEach(b=>{const r=document.createElement('div'); r.className='brow'; r.innerHTML='<div class="bl">'+b.n+'<small>'+b.s+'</small></div><div class="btrack"><div class="bfill '+b.cls+'" data-w="'+b.v+'">'+b.lab+'</div></div>'; silEl.appendChild(r);});
+
+/* REVEAL + TRIGGERS (single engine) */
+function trigger(el){
+  if(el.id==='ladderList'){el.querySelectorAll('.bar').forEach((b,i)=>setTimeout(()=>b.style.width=b.dataset.w+'%',110*i));}
+  if(el.id==='stats'){el.querySelectorAll('.n').forEach(countUp);}
+  if(el.id==='silica'){el.querySelectorAll('.bfill').forEach((f,i)=>setTimeout(()=>f.style.width=f.dataset.w+'%',130*i));}
+}
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');trigger(e.target);io.unobserve(e.target);}});},{threshold:.14});
+document.querySelectorAll('.reveal,#ladderList,#stats,#silica').forEach(el=>io.observe(el));
+
+/* BRAND TOGGLE */
+const brandBtns=document.querySelectorAll('.brandtoggle button');
+brandBtns.forEach(b=>b.addEventListener('click',()=>{document.body.dataset.brand=b.dataset.brand;brandBtns.forEach(x=>x.classList.toggle('active',x===b));}));
+
+/* VIEW TOGGLE */
+const VIEWS=document.querySelectorAll('.view');
+const SEG=document.querySelectorAll('.modeswitch button');
+function activate(name){
+  VIEWS.forEach(v=>v.classList.toggle('active',v.dataset.view===name));
+  SEG.forEach(b=>b.classList.toggle('active',b.dataset.view===name));
+  window.scrollTo(0,0);
+  const av=document.querySelector('.view.active');
+  requestAnimationFrame(()=>{av.querySelectorAll('.reveal,#ladderList,#stats,#silica').forEach(el=>{const r=el.getBoundingClientRect(); if(r.top<window.innerHeight&&r.bottom>0&&!el.classList.contains('in')){el.classList.add('in');trigger(el);io.unobserve(el);}});});
+}
+SEG.forEach(b=>b.addEventListener('click',()=>activate(b.dataset.view)));
+
+openLine('SaraMar');
+</script>
+</body>
+</html>
