@@ -163,6 +163,13 @@ section{padding:72px 0;border-top:1px solid var(--line)}
 .crow .say .lab{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
 .usbar{display:grid;grid-template-columns:1.6fr .8fr 1fr 1fr;gap:14px;padding:10px 20px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
 @media(max-width:760px){.usbar{display:none}}
+.lmx{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.lmx .lmrow{display:grid;grid-template-columns:1.5fr 1.4fr .7fr 1fr 1.1fr .5fr;gap:12px;align-items:center;padding:13px 18px;border-top:1px solid var(--line);font-size:13.5px}
+.lmx .lmrow.head{border-top:0;background:var(--panel2);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.lmx .lmrow:not(.head){background:var(--panel)}
+.lmx .lmname{font-weight:600;font-size:14.5px}
+.lmx .lmrow .price{color:var(--gold);font-weight:600;letter-spacing:.08em}
+@media(max-width:760px){.lmx .lmrow{grid-template-columns:1.3fr 1fr 1.1fr .5fr}.lmx .lm-hide{display:none}}
 
 /* ACCORDION */
 .acc{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:10px;background:var(--panel)}
@@ -183,6 +190,8 @@ section{padding:72px 0;border-top:1px solid var(--line)}
 .dd-tag{display:inline-block;font-size:10.5px;padding:3px 9px;border-radius:999px;margin-left:8px;font-weight:600;letter-spacing:.04em;vertical-align:middle}
 .dd-tag.ours{background:var(--goldDim);color:var(--gold2);border:1px solid var(--gold)}
 .dd-tag.comp{background:rgba(221,129,102,.14);color:#f0a591;border:1px solid rgba(221,129,102,.4)}
+body[data-brand="ts"] .dd-tag .bsm,body[data-brand="ts"] .used .bsm{display:none}
+body[data-brand="sm"] .dd-tag .bt,body[data-brand="sm"] .used .bt{display:none}
 
 /* PRODUCT DEMOS */
 .demo{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--r);padding:30px;margin-bottom:22px}
@@ -252,10 +261,12 @@ section{padding:72px 0;border-top:1px solid var(--line)}
 .stat .big .u{font-size:24px;color:var(--gold)}.stat .lab{font-size:13px;color:var(--muted);margin-top:8px}
 .jeep{margin-top:18px;background:var(--goldDim);border:1px solid var(--line2);border-radius:14px;padding:16px 20px;font-size:14.5px;text-align:center}
 .bars{display:flex;flex-direction:column;gap:14px}
-.brow{display:grid;grid-template-columns:240px 1fr;gap:16px;align-items:center}@media(max-width:640px){.brow{grid-template-columns:140px 1fr}}
+.brow{display:grid;grid-template-columns:240px 1fr 54px;gap:16px;align-items:center}@media(max-width:640px){.brow{grid-template-columns:120px 1fr 46px}}
 .brow .bl{font-size:14px}.brow .bl small{display:block;color:var(--dim);font-size:11.5px}
 .btrack{height:30px;background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.bfill{height:100%;width:0;border-radius:8px;transition:width 1.2s cubic-bezier(.2,.7,.2,1);display:flex;align-items:center;justify-content:flex-end;padding-right:10px;font-size:12px;font-weight:600;color:#10130f}
+.bfill{height:100%;width:0;border-radius:8px;transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
+.bval{font-size:13px;font-weight:700;text-align:right;white-space:nowrap}
+.bval.g{color:#a7d496}.bval.w{color:#f0cd86}.bval.d{color:#f0a591}
 .bfill.g{background:linear-gradient(90deg,#6f9e5b,#8fc173)}.bfill.w{background:linear-gradient(90deg,#c7912f,#e0b15a)}.bfill.d{background:linear-gradient(90deg,#b6543b,#dd8166)}
 table{width:100%;border-collapse:collapse;font-size:14px;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 th,td{text-align:left;padding:13px 16px;border-bottom:1px solid var(--line)}
@@ -266,9 +277,59 @@ tr:last-child td{border-bottom:0}td b{color:var(--gold2)}
 footer{padding:50px 0 70px;border-top:1px solid var(--line);color:var(--dim);font-size:13px;text-align:center}
 footer .fm{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px;color:var(--muted)}
 footer .dot{width:9px;height:9px;border-radius:50%;background:var(--grad-gold)}
+
+/* PASSWORD GATE */
+.gate{position:fixed;inset:0;z-index:99999;background:radial-gradient(1000px 600px at 50% -10%,#16202b,#0c0e11 60%),#0c0e11;display:flex;align-items:center;justify-content:center;padding:24px}
+.gate.hidden{display:none}
+.gatecard{width:100%;max-width:380px;background:linear-gradient(180deg,#161c24,#0f1318);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:38px 32px;text-align:center;box-shadow:0 30px 80px -30px rgba(0,0,0,.85)}
+.gatecard .gdot{width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#e7d3a1,#cda968);margin:0 auto 18px;box-shadow:0 0 18px #cda968}
+.gatecard h1{font-size:30px;font-weight:600;color:#eef2f6;margin-bottom:6px}
+.gatecard p{color:#9aa6b3;font-size:14px;margin-bottom:22px}
+.gate input{width:100%;background:#0c0e11;border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:13px 15px;color:#eef2f6;font-size:15px;font-family:inherit;outline:none;transition:.25s}
+.gate input:focus{border-color:#cda968}
+.gate button{width:100%;margin-top:12px;border:0;border-radius:10px;padding:13px;font:inherit;font-weight:600;font-size:15px;color:#10130f;background:linear-gradient(135deg,#e7d3a1,#cda968 55%,#b08d4f);cursor:pointer;transition:.25s}
+.gate button:hover{filter:brightness(1.05)}
+.gate .err{color:#dd8166;font-size:13px;margin-top:14px;min-height:18px;opacity:0;transition:.2s}
+.gate .err.show{opacity:1}
+.gate.shake .gatecard{animation:gshake .4s}
+@keyframes gshake{0%,100%{transform:none}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 </style>
 </head>
 <body data-brand="ts">
+
+<div class="gate" id="gate">
+  <div class="gatecard">
+    <div class="gdot"></div>
+    <h1 class="serif">Shower Wall Training</h1>
+    <p>Enter the team password to continue.</p>
+    <form id="gateForm">
+      <input id="gatePw" type="password" placeholder="Password" autocomplete="current-password" autofocus>
+      <button type="submit">Unlock</button>
+      <div class="err" id="gateErr">Incorrect password. Try again.</div>
+    </form>
+  </div>
+</div>
+<script>
+(function(){
+  var HASH="1746288394493261";
+  function cyrb53(str,seed){seed=seed||0;var h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(var i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);return (4294967296*(2097151&h2)+(h1>>>0)).toString();}
+  var gate=document.getElementById('gate');
+  try{if(sessionStorage.getItem('swt_unlocked')==='1'){gate.classList.add('hidden');return;}}catch(e){}
+  document.documentElement.style.overflow='hidden';
+  var form=document.getElementById('gateForm'),pw=document.getElementById('gatePw'),err=document.getElementById('gateErr');
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(cyrb53(pw.value)===HASH){
+      try{sessionStorage.setItem('swt_unlocked','1');}catch(e){}
+      gate.classList.add('hidden');document.documentElement.style.overflow='';
+    }else{
+      err.classList.add('show');gate.classList.add('shake');pw.select();
+      setTimeout(function(){gate.classList.remove('shake');},450);
+    }
+  });
+  pw.focus();
+})();
+</script>
 
 <nav>
   <div class="wrap">
@@ -293,10 +354,6 @@ footer .dot{width:9px;height:9px;border-radius:50%;background:var(--grad-gold)}
       <div class="eyebrow">Customer Service Training · Selling Toolkit</div>
       <h1 class="serif">Sell it with <span class="gold-text">confidence.</span></h1>
       <p class="lede">Decode the brand names, compare the lines, beat the competition, and guide every customer to the right shower wall. Use the brand switch in the top-left to put either brand's names front and center.</p>
-      <div class="ideas">
-        <div class="idea"><h3 class="serif">Color-through vs. skin-deep</h3><p>Our best lines carry color through the whole panel. Most cheap competitors print the look in a thin film over a dark core.</p></div>
-        <div class="idea"><h3 class="serif">Repairable vs. replace-only</h3><p>Solid-surface lines sand and buff back to like-new. Printed panels can only be replaced.</p></div>
-      </div>
     </div>
   </header>
 
@@ -318,6 +375,13 @@ footer .dot{width:9px;height:9px;border-radius:50%;background:var(--grad-gold)}
       <p>Tap any line for the full picture: material, repairability, looks, colors, sizes, and the customer it fits best.</p></div>
     <div class="linegrid reveal" id="lineGrid"></div>
     <div class="detail" id="lineDetail"></div>
+    <h3 class="serif reveal" style="font-size:24px;font-weight:600;margin:40px 0 16px">Compare every line at a glance</h3>
+    <div class="lmx reveal" id="lineMatrix"></div>
+    <p class="note reveal">* Through-color backing with the pattern embedded or molded into the surface. The fully renewable, sand-and-buff lines are the smooth solid-surface ones: SaraMar / Monterey and Lusso / Luxura. On Prodigy Plus / Pioneer Plus, only the solid-color panels are repairable, not the patterned panel.</p>
+    <div class="ideas reveal" style="margin-top:34px">
+      <div class="idea"><h3 class="serif">Color-through vs. skin-deep</h3><p>Our best lines carry color through the whole panel. Most cheap competitors print the look in a thin film over a dark core.</p></div>
+      <div class="idea"><h3 class="serif">Repairable vs. replace-only</h3><p>Solid-surface lines sand and buff back to like-new. Printed panels can only be replaced.</p></div>
+    </div>
   </div></section>
 
   <section id="quiz"><div class="wrap">
@@ -426,7 +490,6 @@ footer .dot{width:9px;height:9px;border-radius:50%;background:var(--grad-gold)}
   <section id="strength"><div class="wrap">
     <div class="sec-head reveal"><div class="eyebrow">Engineered strength</div><h2 class="serif">A material difference</h2><p>The numbers that come out of that process.</p></div>
     <div class="stats reveal" id="stats"></div>
-    <div class="jeep reveal">We drove a <b>6,200 lb Jeep Wrangler</b> directly over our compression-molded base. No cracks. No scratches. Not even a scuff.</div>
     <div class="coach reveal"><b>Coaching note:</b> the "4x impact / 2.5x heat resistance" figures are published on our base product pages (vs. other bases). For the wall "4x vs. acrylic" line, if a customer presses for test data, say "significantly more impact-resistant than acrylic."</div>
   </div></section>
 
@@ -474,6 +537,7 @@ footer .dot{width:9px;height:9px;border-radius:50%;background:var(--grad-gold)}
       <div class="matcard"><div class="dt serif" style="font-size:18px">Zero / low threshold</div><p style="margin-top:8px">A 3-in-1 threshold handles single, double, or triple-threshold installs. In a flush install the base sits only about <b style="color:var(--gold2)">1/8 inch</b> off the finished floor for a modern wet-room look with safe entry.</p></div>
       <div class="matcard"><div class="dt serif" style="font-size:18px">Field trimmable</div><p style="margin-top:8px">Trim up to <b style="color:var(--gold2)">4 inches in width</b> (away from the drain) and <b style="color:var(--gold2)">2 inches in depth</b> without compromising the base or its integrated tiling flanges. Center, end, and corner drains; slip-resistant textured floor.</p></div>
     </div>
+    <div class="jeep reveal">We drove a <b>6,200 lb Jeep Wrangler</b> directly over our compression-molded base. No cracks. No scratches. Not even a scuff.</div>
   </div></section>
 </div>
 
@@ -540,6 +604,16 @@ function openLine(ts){
     '</div>';
   lineDetail.classList.add('open');
 }
+
+/* LINE MATRIX */
+var MXMAT={Prodigy:'SMC','Prodigy Plus':'SMC',Expressions:'Composite solid surface',Titan:'Aluminum composite',SaraMar:'BMC solid surface',Lusso:'Cast acrylic solid surface'};
+var MXTHICK={Prodigy:'3.5mm','Prodigy Plus':'3.5mm',Expressions:'~1/4"',Titan:'4mm',SaraMar:'1/4"',Lusso:'1/4"'};
+var MXCOLOR={Prodigy:['Through*','warn'],'Prodigy Plus':['Mixed*','warn'],Expressions:['Through*','warn'],Titan:['Surface','no'],SaraMar:['Through','good'],Lusso:['Through','good']};
+var MXREPAIR={Prodigy:['Limited','warn'],'Prodigy Plus':['Solids only','warn'],Expressions:['Limited','warn'],Titan:['No','no'],SaraMar:['Yes','good'],Lusso:['Yes','good']};
+var lineMatrix=document.getElementById('lineMatrix');
+var mx='<div class="lmrow head"><div>Line</div><div class="lm-hide">Material</div><div class="lm-hide">Thickness</div><div>Color</div><div>Repairable</div><div>Price</div></div>';
+LINES.forEach(function(l){var c=MXCOLOR[l.ts],r=MXREPAIR[l.ts];mx+='<div class="lmrow"><div class="lmname">'+np(l)+'</div><div class="lm-hide">'+MXMAT[l.ts]+'</div><div class="lm-hide">'+MXTHICK[l.ts]+'</div><div><span class="badge '+c[1]+'">'+c[0]+'</span></div><div><span class="badge '+r[1]+'">'+r[0]+'</span></div><div class="price">'+l.price+'</div></div>';});
+lineMatrix.innerHTML=mx;
 
 /* QUIZ */
 const QUESTIONS=[
@@ -765,7 +839,8 @@ let lastG='';
 DEEP.forEach(d=>{
   if(d.g!==lastG){const h=document.createElement('div'); h.className='dd-grp'; h.textContent=(d.g==='ours'?'Our materials':'Competitor materials'); deepList.appendChild(h); lastG=d.g;}
   const a=document.createElement('div'); a.className='acc dd';
-  a.innerHTML='<div class="ahead"><span>'+d.name+' <span class="dd-tag '+d.g+'">'+d.brands+'</span></span><span class="plus">+</span></div>'+
+  var bp=d.brands.split(' / '); var tg=(d.g==='ours'&&bp.length>1)?('<span class="bt">'+bp[0]+'</span><span class="bsm">'+bp[1]+'</span>'):d.brands;
+  a.innerHTML='<div class="ahead"><span>'+d.name+' <span class="dd-tag '+d.g+'">'+tg+'</span></span><span class="plus">+</span></div>'+
     '<div class="abody"><div class="inner dd-body">'+
     '<div class="row"><div class="k">Composition</div><div>'+d.comp+'</div></div>'+
     '<div class="row"><div class="k">How it’s made</div><div>'+d.made+'</div></div>'+
@@ -792,7 +867,8 @@ const matGrid=document.getElementById('matGrid');
 MATS.forEach(m=>{
   const stack=m.layers.map(L=>'<div class="layer '+L[0]+'">'+L[1]+'</div>').join('');
   const c=document.createElement('div'); c.className='matcard';
-  c.innerHTML='<div class="stack">'+stack+'</div><h3 class="serif">'+m.name+'</h3><div class="used">'+m.used+'</div><p>'+m.p+'</p><span class="tag '+m.tag[0]+'">'+m.tag[1]+'</span>';
+  var up=m.used.split(' / '); var ut=up.length>1?('<span class="bt">'+up[0]+'</span><span class="bsm">'+up[1]+'</span>'):m.used;
+  c.innerHTML='<div class="stack">'+stack+'</div><h3 class="serif">'+m.name+'</h3><div class="used">'+ut+'</div><p>'+m.p+'</p><span class="tag '+m.tag[0]+'">'+m.tag[1]+'</span>';
   matGrid.appendChild(c);
 });
 
@@ -808,7 +884,7 @@ STATS.forEach(s=>{const d=document.createElement('div'); d.className='stat'; d.i
 /* SILICA */
 const SIL=[{n:'Our cast-acrylic solid surface',s:'Lusso / Luxura',v:1,cls:'g',lab:'~0%'},{n:'Cultured marble',s:'cast polymer',v:2,cls:'g',lab:'<2%'},{n:'Porcelain tile',s:'fired ceramic',v:21,cls:'w',lab:'~21%'},{n:'Thinset mortar',s:'used with tile',v:45,cls:'d',lab:'30-60%'},{n:'Engineered quartz',s:'countertops',v:92,cls:'d',lab:'90%+'}];
 const silEl=document.getElementById('silica');
-SIL.forEach(b=>{const r=document.createElement('div'); r.className='brow'; r.innerHTML='<div class="bl">'+b.n+'<small>'+b.s+'</small></div><div class="btrack"><div class="bfill '+b.cls+'" data-w="'+b.v+'">'+b.lab+'</div></div>'; silEl.appendChild(r);});
+SIL.forEach(b=>{const r=document.createElement('div'); r.className='brow'; r.innerHTML='<div class="bl">'+b.n+'<small>'+b.s+'</small></div><div class="btrack"><div class="bfill '+b.cls+'" data-w="'+b.v+'"></div></div><div class="bval '+b.cls+'">'+b.lab+'</div>'; silEl.appendChild(r);});
 
 /* REVEAL + TRIGGERS (single engine) */
 function trigger(el){
