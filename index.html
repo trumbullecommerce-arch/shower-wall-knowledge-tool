@@ -310,6 +310,30 @@ footer .dot{width:9px;height:9px;border-radius:50%;background:var(--grad-gold)}
 .gate .err.show{opacity:1}
 .gate.shake .gatecard{animation:gshake .4s}
 @keyframes gshake{0%,100%{transform:none}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+
+/* TALK TRACK */
+.tt{position:relative}
+.ttstep{position:relative;padding:0 0 24px 70px}
+.ttstep:before{content:"";position:absolute;left:24px;top:10px;bottom:-6px;width:2px;background:linear-gradient(var(--gold),rgba(205,169,104,.12))}
+.ttstep:last-child:before{display:none}
+.ttnum{position:absolute;left:0;top:0;width:48px;height:48px;border-radius:50%;border:1px solid var(--gold);background:var(--goldDim);color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.ttcard{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:14px;padding:18px 22px}
+.ttcard .aim{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.ttcard h4{font-size:17px;font-weight:600;margin-bottom:10px}
+.ttcard .script{font-size:14.5px;font-style:italic;border-left:3px solid var(--gold);padding-left:15px;line-height:1.75}
+
+/* INSTALL TIMELINE */
+.tl{display:flex;flex-direction:column;gap:16px}
+.tlrow{display:grid;grid-template-columns:175px 1fr 90px;gap:16px;align-items:center}
+@media(max-width:640px){.tlrow{grid-template-columns:108px 1fr 64px}}
+.tlrow .tll{font-size:14px;font-weight:600}
+.tlrow .tll small{display:block;color:var(--dim);font-weight:400;font-size:12px;margin-top:2px}
+.tltrack{height:38px;border-radius:10px;background:var(--panel);border:1px solid var(--line);overflow:hidden}
+.tlfill{height:100%;width:0;border-radius:10px;transition:width 1.2s cubic-bezier(.2,.7,.2,1)}
+.tlfill.us{background:linear-gradient(90deg,#6f9e5b,#8fc173)}
+.tlfill.tile{background:linear-gradient(90deg,#b6543b,#dd8166)}
+.tlval{font-size:13.5px;font-weight:700}.tlval.us{color:#a7d496}.tlval.tile{color:#e0a99a}
+td.us{color:#a7d496}td.tile{color:#cfa79a}
 </style>
 </head>
 <body data-brand="ts">
@@ -437,6 +461,12 @@ footer .dot{width:9px;height:9px;border-radius:50%;background:var(--grad-gold)}
       <p>The five you'll hear most, with a response you can say out loud.</p></div>
     <div id="accList" class="reveal"></div>
   </div></section>
+
+  <section id="talktrack"><div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">The full pitch</div><h2 class="serif">The showroom talk track</h2>
+      <p>A five-step flow that moves a customer from their pain points to the close. Adapt the wording, keep the order.</p></div>
+    <div class="tt reveal" id="ttList"></div>
+  </div></section>
 </div>
 
 <!-- ================= PRODUCT VIEW ================= -->
@@ -513,6 +543,33 @@ footer .dot{width:9px;height:9px;border-radius:50%;background:var(--grad-gold)}
     <div class="sec-head reveal"><div class="eyebrow">Engineered strength</div><h2 class="serif">A material difference</h2><p>The numbers that come out of that process.</p></div>
     <div class="stats reveal" id="stats"></div>
     <div class="coach reveal"><b>Coaching note:</b> the "4x impact / 2.5x heat resistance" figures are published on our base product pages (vs. other bases). For the wall "4x vs. acrylic" line, if a customer presses for test data, say "significantly more impact-resistant than acrylic."</div>
+  </div></section>
+
+  <section id="install"><div class="wrap">
+    <div class="sec-head reveal"><div class="eyebrow">Versus traditional tile</div><h2 class="serif">Installed in a day, not a week</h2>
+      <p>The same grout-free look as tile, without the demolition, the dust, the silica, or the lifetime of scrubbing. Here is how the install and the long-term ownership compare.</p></div>
+    <div class="stats reveal">
+      <div class="stat"><div class="big">1&ndash;2<span class="u"> days</span></div><div class="lab">to install, not 5 to 10+</div></div>
+      <div class="stat"><div class="big">0<span class="u"> grout</span></div><div class="lab">grout lines to scrub or reseal</div></div>
+      <div class="stat"><div class="big">450<span class="u">&deg;F</span></div><div class="lab">heat resistance, thermoset cured</div></div>
+      <div class="stat"><div class="big">10<span class="u">-yr</span></div><div class="lab">residential warranty</div></div>
+    </div>
+    <div class="tl reveal" id="installTL">
+      <div class="tlrow"><div class="tll">Our composite panels<small>glue-up</small></div><div class="tltrack"><div class="tlfill us" data-w="20"></div></div><div class="tlval us">1&ndash;2 days</div></div>
+      <div class="tlrow"><div class="tll">Traditional tile<small>demo, set, grout, seal</small></div><div class="tltrack"><div class="tlfill tile" data-w="100"></div></div><div class="tlval tile">5&ndash;10+ days</div></div>
+    </div>
+    <div class="reveal" style="overflow-x:auto;margin-top:26px">
+    <table>
+      <thead><tr><th>Dimension</th><th>Our composite system</th><th>Traditional tile</th></tr></thead>
+      <tbody>
+        <tr><td><b>Project timeline</b></td><td class="us">1 to 2 days, minimal disruption</td><td class="tile">5 to 10+ days of setting, grouting, sealing</td></tr>
+        <tr><td><b>Mess &amp; debris</b></td><td class="us">Clean, dry-cut with standard woodworking tools</td><td class="tile">Wet-saw dust, thinset, water, and debris</td></tr>
+        <tr><td><b>Substrate</b></td><td class="us">Glue over greenboard, cement board, or stable tile</td><td class="tile">Demolish to the studs to build a flat backer</td></tr>
+        <tr><td><b>Waterproofing</b></td><td class="us">Continuous panels, 100% silicone-sealed joints</td><td class="tile">Porous grout cracks with movement; leaks and mold</td></tr>
+        <tr><td><b>Maintenance &amp; hygiene</b></td><td class="us">Zero grout lines; passive mold resistance (ASTM G-21)</td><td class="tile">Scrub and reseal porous grout every year</td></tr>
+      </tbody>
+    </table>
+    </div>
   </div></section>
 
   <section id="safety"><div class="wrap">
@@ -909,6 +966,21 @@ const SIL=[{n:'Our cast-acrylic solid surface',s:'Lusso / Luxura',v:1,cls:'g',la
 const silEl=document.getElementById('silica');
 SIL.forEach(b=>{const r=document.createElement('div'); r.className='brow'; r.innerHTML='<div class="bl">'+b.n+'<small>'+b.s+'</small></div><div class="btrack"><div class="bfill '+b.cls+'" data-w="'+b.v+'"></div></div><div class="bval '+b.cls+'">'+b.lab+'</div>'; silEl.appendChild(r);});
 
+/* TALK TRACK */
+var TT=[
+ {aim:'The hook',t:'Find their pain first',s:'When you picture your dream bathroom remodel, what is the biggest headache you want to avoid? Contractors tearing up your house for weeks, or scrubbing moldy grout lines with a toothbrush in three years?'},
+ {aim:'Position the difference',t:'Composite stone, not plastic',s:'Most homeowners who want a grout-free shower are afraid of cheap, hollow-sounding plastic. Ours are heavy-duty, compression-molded composite stone, cured under 2,000 pounds of pressure into a rock-solid, cross-linked panel. Competitor SPC is just limestone dust and PVC with a printed photo film on top; scratch it and you expose the plastic core forever. On ours the color and texture are baked through the panel, so a scratch sands and buffs right out, twice as thick and four times the impact strength of standard bathroom materials.'},
+ {aim:'The real cost of tile',t:'Time and labor savings',s:'With tile, the tile itself is a fraction of the bill. You are paying for days of skilled labor, framing, waterproofing, thinset, grout, and sealing. Our panels glue up in a single day, right over existing substrates or stable old tile. Eliminating demolition and days of drying lets you put in a premium, lifetime system for less than a mid-grade tile job.'},
+ {aim:'Family health',t:'Zero-silica safety',s:'When installers cut tile or quartz, they release crystalline silica dust, a serious lung hazard, into your home. Our SMC and BMC contain zero quartz and zero crystalline silica; the filler is natural alumina trihydrate, which even slows flame spread by releasing harmless steam if heated. The panels are PFAS-free, BPA-free, and emit virtually zero VOCs after install.'},
+ {aim:'Close with proof',t:'The warranty',s:'Tile is almost never warrantied against water leaks, because grout is designed to fail over time. Our high-density composite panels are backed by a 10-year residential warranty, a permanent, beautiful, maintenance-free investment that looks the same in a decade as it does today.'}
+];
+var ttList=document.getElementById('ttList');
+TT.forEach(function(step,i){
+  var d=document.createElement('div'); d.className='ttstep';
+  d.innerHTML='<div class="ttnum">'+(i+1)+'</div><div class="ttcard"><div class="aim">'+step.aim+'</div><h4>'+step.t+'</h4><div class="script">&ldquo;'+step.s+'&rdquo;</div></div>';
+  ttList.appendChild(d);
+});
+
 /* PRODUCT DEMOS */
 var scratchBtn=document.getElementById('scratchBtn');
 if(scratchBtn){scratchBtn.addEventListener('click',function(){
@@ -930,9 +1002,10 @@ function trigger(el){
   if(el.id==='ladderList'){el.querySelectorAll('.fill').forEach((f,i)=>setTimeout(()=>f.style.width=f.dataset.w+'%',105*i));}
   if(el.id==='stats'){el.querySelectorAll('.n').forEach(countUp);}
   if(el.id==='silica'){el.querySelectorAll('.bfill').forEach((f,i)=>setTimeout(()=>f.style.width=f.dataset.w+'%',130*i));}
+  if(el.id==='installTL'){el.querySelectorAll('.tlfill').forEach((f,i)=>setTimeout(()=>f.style.width=f.dataset.w+'%',180*i));}
 }
 const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');trigger(e.target);io.unobserve(e.target);}});},{threshold:.01,rootMargin:'0px 0px 140px 0px'});
-document.querySelectorAll('.reveal,#ladderList,#stats,#silica').forEach(el=>io.observe(el));
+document.querySelectorAll('.reveal,#ladderList,#stats,#silica,#installTL').forEach(el=>io.observe(el));
 
 /* BRAND TOGGLE */
 const brandBtns=document.querySelectorAll('.brandtoggle button');
