@@ -886,6 +886,22 @@ const SIL=[{n:'Our cast-acrylic solid surface',s:'Lusso / Luxura',v:1,cls:'g',la
 const silEl=document.getElementById('silica');
 SIL.forEach(b=>{const r=document.createElement('div'); r.className='brow'; r.innerHTML='<div class="bl">'+b.n+'<small>'+b.s+'</small></div><div class="btrack"><div class="bfill '+b.cls+'" data-w="'+b.v+'"></div></div><div class="bval '+b.cls+'">'+b.lab+'</div>'; silEl.appendChild(r);});
 
+/* PRODUCT DEMOS */
+var scratchBtn=document.getElementById('scratchBtn');
+if(scratchBtn){scratchBtn.addEventListener('click',function(){
+  var d=document.getElementById('demoScratch'); d.classList.remove('scratched'); void d.offsetWidth; d.classList.add('scratched');
+  document.getElementById('capOur').textContent='A scratch only reveals the same color, so it blends in and buffs out.';
+  document.getElementById('capTheir').textContent='A scratch cuts through the print to a dark core. Permanent, not repairable.';
+});}
+var steamBtn=document.getElementById('steamBtn');
+if(steamBtn){steamBtn.addEventListener('click',function(){
+  var d=document.getElementById('demoSteam'); d.classList.remove('steamed'); void d.offsetWidth; d.classList.add('steamed');
+});}
+var ageBtn=document.getElementById('ageBtn');
+if(ageBtn){ageBtn.addEventListener('click',function(){
+  document.getElementById('demoGrout').classList.toggle('aged');
+});}
+
 /* REVEAL + TRIGGERS (single engine) */
 function trigger(el){
   if(el.id==='ladderList'){el.querySelectorAll('.bar').forEach((b,i)=>setTimeout(()=>b.style.width=b.dataset.w+'%',110*i));}
